@@ -6,14 +6,17 @@
         <a class="navbar-brand">
           <img src="@\assets\EventPluse.png" alt="Bootstrap" width="30" height="24">
         </a>
+
+        <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
         <div class="input-group">
-          <input type="text" class="form-control" v-model="searchQuery" @keyup.enter="performSearch" placeholder="Rechercher...">
+          <input type="text" class="form-control bg-light border-1" v-model="searchQuery" @keyup.enter="performSearch" placeholder="Rechercher...">
           <div class="input-group-append">
-            <button class="btn btn-primary" type="button" @click="performSearch">
-              <img src="@\assets\icons8-chercher-100 (1).png" height="20px">
+            <button class="btn btn-primary bg-light" type="button" @click="performSearch">
+              <i class="fas fa-search fa-sm" height="20px"></i>
             </button>
           </div>
         </div>
+        </form>
         <ul class="nav nav-underline">
           <li v-for="(item, index) in navbarItems" :key="index" :class="{ 'nav-item': true, 'active': menuActif === index }">
             <a class="nav-link" @click="setMenuActif(index)" :style="{ color: (menuActif === index) ? '#7C5295' : '' }" :href="item.route">{{ item.label }}</a>
@@ -68,13 +71,17 @@ export default {
 }
 
 .btn-primary{
-  background-color:  #ffffff;
-  border-color: #ffffff;
+  background-color:  lightgray;
+  border-color: #ccc;
+  border-left:none;
   border-top-left-radius: 0%;
   border-bottom-left-radius: 0%;
   border-top-right-radius: 20px;
   border-bottom-right-radius: 20px;
   height: 37px;
+}
+.fa-search {
+  color:#7C5295;
 }
 .input-group {
   width: 300px; /* Ajustez la largeur selon vos besoins */
@@ -85,9 +92,11 @@ export default {
   display: flex;
   align-items: center;
 }
-.nav-link{
+.nav-link {
   color: #7C5295;
 }
+
+
 
 .active{
   color: red !important;

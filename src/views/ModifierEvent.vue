@@ -180,6 +180,7 @@
 
 
       updateEvent() {
+        var mythis=this;
   const selectedCategorieId = this.model.evenements.categories_id;
   const selectedVilleId = this.model.evenements.villes_id;
   
@@ -195,10 +196,9 @@
       this.$router.push({ name: 'listeEvents' });
     })
     .catch(function(error) {
-      // Utiliser mythis au lieu de this pour faire référence à l'instance Vue
       if (error.response) {
         if (error.response.status == 422) {
-          this.errorList = error.response.data.errors; // Utiliser mythis.errorList
+          mythis.errorList = error.response.data.errors; 
         }
         if (error.response.status == 404) {
           alert(error.response.data.message);

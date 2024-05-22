@@ -9,14 +9,11 @@
 <!-- Topbar Search -->
 <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
   <div class="input-group">
-    <input type="text" class="form-control bg-light border-0 small" placeholder="Search ..."
+    <input type="text" class="form-control bg-light border-1 small" placeholder="Rechercher ..."
       aria-label="Search" aria-describedby="basic-addon2">
     <div class="input-group-append">
       <button class="btn bg-custom-color" type="button">
-        <i class="f
-        
-        
-        as fa-search fa-sm"></i>
+        <i class="fas fa-search fa-sm"></i>
       </button>
     </div>
   </div>
@@ -185,5 +182,8 @@
 <style scoped>
 .bg-custom-color {
   background-color: #ae71d1; 
+}
+.fa-search {
+  color:white;
 }
 </style>

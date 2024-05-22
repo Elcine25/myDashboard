@@ -91,13 +91,13 @@ const router = createRouter({
     },
     {
       path: '/evenements',
-      name: 'evenements',
+      name: 'evenementsPre',
       component: EvenementsView
     },
     
     {
-      path: '/descrip',
-      name: 'descrip',
+      path: '/evenements/:id',
+      name: 'descripEvent',
       component: DescripView
     },
     {

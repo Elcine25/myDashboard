@@ -14,11 +14,11 @@
           <img src="@\assets\EventPluse.png" width="90px" height="70px" />
         </figure>
     </div>
-    <div class="col-4 m-auto">
+    <div class="col-5 m-auto">
       <h2 class="mb-5">Connexion</h2>
     </div>
 
-    <form class="user" @submit.prevent="loginUser">
+    <form class="user" @submit.prevent="login">
       
         <div class="form-group p-3">
           <input v-model="user.email" type="email" class="form-control form-control-user"
@@ -50,24 +50,26 @@
 </div>
 </template>
 
-<script setup>
-  import { ref } from 'vue';
-  import axios from 'axios';
-  import { useRouter } from 'vue-router';
-  const user = ref({
-    email: '',
-    password: ''
-  });
-  const router = useRouter();
-  async function loginUser() {
-    try {
-        const response = await axios.post('http://localhost:8000/api/login', user.value);      
-        localStorage.setItem('accessToken', response.data.access_token);
-      router.push('/listecategories');
-    } catch (error) {
-      console.error("Erreur d'authentification", error.response.data);
+<script>
+  import { login } from '../services/authService';
+
+export default {
+  data() {
+    return {
+      email: '',
+      password: ''
+    };
+  },
+  methods: {
+    login() {
+      login(this.email, this.password).then(() => {
+        this.$router.push('/');
+      }).catch(error => {
+        console.error("There was an error!", error);
+      });
     }
   }
+};
 </script>
 
 <style scoped>

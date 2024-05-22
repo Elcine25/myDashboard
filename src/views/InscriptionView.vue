@@ -9,12 +9,12 @@
         <div class="card o-hidden border-2 shadow-lg my-5 bg-custom">
       <div class="row justify-content-center">    
     <div class="p-5">
-      <div class="col-6 m-auto">
+      <div class="col-2 m-auto">
         <figure>
           <img src="@\assets\EventPluse.png" width="90px" height="70px" />
         </figure>
     </div>
-    <div class="col-6 m-auto">
+    <div class="col-5 m-auto">
       <h2 class="mb-5">Inscription</h2>
     </div>
     <div class="text-center ">
@@ -25,7 +25,7 @@
       </p>
     </div>
 
-    <form @submit.prevent="registerUser">
+    <form @submit.prevent="register">
       <div class="form-group p-3">
         <input v-model="user.email" type="email" class="form-control form-control-user" id="exampleInputEmail" placeholder="Email Address" required>
       </div>
@@ -65,27 +65,29 @@
 
 </template>
 
-<script setup>
-import { ref } from 'vue';
-import axios from 'axios';
+<script >
+import { register } from '../services/authService';
 
-const user = ref({
-  email: '',
-  name: '',
-  password: '',
-  password_confirmation: ''
-});
+export default {
+  data() {
+    return {
+      name: '',
+      email: '',
+      password: '',
+      password_confirmation: ''
+    };
+  },
 
-const registerUser = async () => {
-  try {
-    const response = await axios.post('http://localhost:8000/api/register', user.value);
-    localStorage.setItem('accessToken', response.data.access_token);
-    // Note: Vous ne pouvez pas utiliser this.$router.push dans un composant avec <script setup>
-    // Vous devrez utiliser une autre méthode pour la navigation
-  } catch (error) {
-    console.error("Erreur d'authentification", error.response.data);
+  methods: {
+    register() {
+      register(this.name, this.email, this.password).then(() => {
+        this.$router.push('/login');
+      }).catch(error => {
+        console.error("Il y a une erreur !", error);
+      });
+    }
   }
-};
+  }
 </script>
 
 <style scoped>

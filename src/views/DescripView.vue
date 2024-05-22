@@ -1,119 +1,140 @@
 <template>
-    <nav class="navbar navbar-expand-lg navbar-dark custom-bg-color">
-  <div class="container">
-    <a class="navbar-brand" >
-      <img src="@\assets\EventPluse.png" alt="Bootstrap" width="30" height="24">
-    </a>
-    <div class="input-group">
-      <input type="text" class="form-control" v-model="searchQuery" @keyup.enter="performSearch" placeholder="Rechercher...">
-      <div class="input-group-append">
-        <button class="btn btn-primary" type="button" @click="performSearch">
-          <img src="@\assets\icons8-chercher-100 (1).png" height="20px">
-        </button>
-      </div>
-    </div>
-    <ul class="nav nav-underline">
-  <li class="nav-item">
-    <a class="nav-link active" aria-current="page" href="#" style="color: #7C5295; border-bottom-color: #7C5295">Accueil</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="#" style="color: #7C5295">Voir des événements</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="#" style="color: #7C5295">S'inscrire</a>
-  </li>
-</ul>
-    <div class="mr-3">
-    <a href="url_de_votre_lien">
-      <UserButton />
-    </a>
-    </div>
-  </div>
+    <nav>
+      <Navbar/>
     </nav>
     <div class="banner">
       <!--<img src="@\assets\csm_atelier_4_fc7bdce275.jpg" class="mt-1" width="100%" height="300" alt="">-->
     </div>
+    
+    <body>
     <div class="desc">
-      <div class="nom">Nom de l'événement</div>
+      <div class="nom">{{ evenements.nom }}</div>
       <div class="j-m-a">
-        <img src="@\assets\calendar.929x1024.png" alt="" class="calendar">
-        <p>Le jour-mois-année. En ligne ou présentiel(facultatif)</p>
+        <i class="fas fa-calendar fa-lg"></i>
+        <p class="ml-1">Le {{formatDate(evenements.date)}} à {{ evenements.heure }}.</p>
+      </div>
+      <div class="j-m-a">
+        <i class=" bi-geo "></i> <i class="bi-alarm"></i>
+        <p class="ml-1"> {{ evenements.lieu }}.</p>
       </div>
     <div class="apropos">A-propos de cet événement</div>
-      <div class="descrip"> apzd,xsjcndjcndskcnnjjdcnjksx,c jvnfhvbxjj jdncsxwcnosjncnjcb ndnoiazndcjekbhbvbdjgvxkjhbhbfbncjrhrbbnwjniuhzrzrççà_b f&"_bsjbfugHF4Z0F088Gfbsvc"</div>
-    </div> 
+      <div class="descrip"> {{ evenements.description }}</div>
+    </div> Catégorie
     <div class="comments">
       <div class="affcomm">
         <div class="profil">
-        <span>{{ eventDate }}</span>
+        <span>kikh</span>
       </div>
         <div class="personame">AMS Adna</div>
-        <p class="com"> jcnujdàzajhcnsvbsi oazudoaz bcih dzbcuefc uvuhfbe zhbu ubfce uqbcoo kdcbue kdbvu dvb. Trè impatiente d'y être.</p>
+        <p class="com"> jcnujdàzajhcnsvbsi oazudoaz bcih dzbcuefc uvuhfbe zhbu
+           ubfce uqbcoo kdcbue kdbvu dvb. Trè impatiente d'y être.</p>
       </div>
-    </div>
 
+  </div>
+
+    </body>
       <div class="mt-3">
-        <Footer />
+        <Foooter />
       </div>
   </template>
   
   <script>
-  //import UserButton from '../components/UserButton.vue';
- // import Footer from '../components/Footer.vue';
+ import axios from 'axios'
+ import Foooter from '../components/Foooter.vue';
+ import Navbar from '@/components/Navbar.vue';
   
   export default {
     components: {
       //UserButton,
-      //Footer
+      Foooter,
+      Navbar
   },
-  
-    data() {
-      return {
-        searchQuery: ''
-      }
+  name: 'descripEvent',
+    data(){
+     return{
+      searchQuery: '',
+      evenements: {},
+        evenementId:this.$route.params.id,
+        categories: [],
+        villes: [] 
+     }
+    },
+    mounted() {
+      this.getEvenements(this.evenementId);
+      this.getCategories();
+      this.getVilles();
     },
     methods: {
+      
+        getEvenements(evenementId){
+            axios.get('http://localhost:8000/api/evenements/'+ evenementId)
+            .then(response => {
+              this.evenements = response.data.evenements; 
+              console.log(this.evenements);
+       })
+      .catch(error => {
+        console.error("Erreur d'affichage de l'événement", error);
+        alert("Une erreur s'est produite lors de l'affichage de la l'événement.");
+      });
+        },
+
+        getCategories(){
+            axios.get('http://localhost:8000/api/categories')
+            .then(response => {
+            console.log(response.data.categories);
+       })
+      .catch(error => {
+        console.error("Erreur d'affichage de catégorie", error);
+        alert("Une erreur s'est produite lors de l'affichage de la catégorie.");
+      });
+        },
+
+        getVilles(){
+          axios.get('http://localhost:8000/api/villes')
+          .then(response => {
+          console.log(response.data.villes);
+     })
+    .catch(error => {
+      console.error("Erreur d'affichage de catégorie", error);
+      alert("Une erreur s'est produite lors de l'affichage de la catégorie.");
+    });
+      },
       performSearch() {
         // Insérez votre logique de recherche ici
         console.log('Recherche effectuée:', this.searchQuery);
-      }
+      },
+      formatDate(dateString) {
+    // Convertir la chaîne de date en objet Date
+    const date = new Date(dateString);
+    
+    // Récupérer le jour en format numérique
+    const day = date.getDate();
+    
+    // Récupérer le mois en format alphabétique
+    const monthIndex = date.getMonth();
+    const months = [
+      'Janvier', 'Fevrier', 'Mars', 'Avril', 'Mai', 'Juin',
+      'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+    ];
+    const month = months[monthIndex];
+    
+    // Concaténer le jour et le mois dans le format souhaité
+    return `${day} ${month}`;
+  },
     }
   };
   
   </script>
   
   <style scoped>
-  /*style du navbar*/
-  .custom-bg-color {
-    background-color: #e7dede /* Remplacez #ff0000 par votre couleur personnalisée */
-  }
-  
-  .form-control {
-    border-radius: 20px;
-    border: 2px;
-  }
-  
-  .btn-primary{
-    background-color:  #ffffff;
-    border-color: #ffffff;
-    border-top-left-radius: 0%;
-    border-bottom-left-radius: 0%;
-    border-top-right-radius: 20px;
-    border-bottom-right-radius: 20px;
-    border-right: 2px;
-    height: 37px;
-  }
-  .input-group {
-      width: 300px; /* Ajustez la largeur selon vos besoins */
-      border-right: 2px;
-  }
-  
-  .input-group-append button {/* Style pour centrer verticalement l'icône de recherche */
-    display: flex;
-    align-items: center;
-  }
+  /*style des détails*/
+
   .desc{
     margin: 1.5cm;
+  }
+  .j-m-a{
+    display: flex;
+    margin: 1cm;
   }
   .nom{
     font-size: larger;

@@ -92,7 +92,7 @@ export default {
      })
     .catch(error => {
       console.error("Erreur d'affichage de catégorie", error);
-      alert("Une erreur s'est produite lors de l'affichage de la catégorie.");
+      alert("Une erreur s'est produite lors de l'affichage des villes.");
     });
       },
 

@@ -79,9 +79,10 @@
     display: flex;
     bottom: 0;
     width: 100%;
+    height: 11cm;
     padding: 70px 0;
     text-align: center;
-    background: linear-gradient(to bottom, #f6e1fc 0%, #450568 100%);
+    background: linear-gradient(to bottom, #f6e1fc -10%, #450568 100%);
 
   }
   .logo {
