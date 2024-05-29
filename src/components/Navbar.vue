@@ -8,24 +8,27 @@
         </a>
 
         <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-        <div class="input-group">
+        <!--<div class="input-group">
           <input type="text" class="form-control bg-light border-1" v-model="searchQuery" @keyup.enter="performSearch" placeholder="Rechercher...">
           <div class="input-group-append">
             <button class="btn btn-primary bg-light" type="button" @click="performSearch">
               <i class="fas fa-search fa-sm" height="20px"></i>
             </button>
           </div>
-        </div>
+        </div>-->
         </form>
         <ul class="nav nav-underline">
           <li v-for="(item, index) in navbarItems" :key="index" :class="{ 'nav-item': true, 'active': menuActif === index }">
             <a class="nav-link" @click="setMenuActif(index)" :style="{ color: (menuActif === index) ? '#7C5295' : '' }" :href="item.route">{{ item.label }}</a>
           </li>
         </ul>
-        <div class="mr-3">
+        <div v-if="isLoggedIn" class="mr-3">
           <a href="/connexion">
             <UserButton />
           </a>
+        </div>
+        <div  v-if="!isLoggedIn"  class="mr-3">
+          <button @click="logout"><DeconUserButton /></button>
         </div>
       </div>
     </nav>
@@ -33,23 +36,44 @@
 </template>
 
 <script>
+import router from '@/router';
+import axios from 'axios';
 import UserButton from '../components/UserButton.vue';
+import DeconUserButton from '../components/DeconUserButton.vue'
 export default {
   components: {
     UserButton,
+    DeconUserButton
   },
   data() {
     return {
       searchQuery: '',
       menuActif: null, // Ajout de la propriété menuActif
+      isLoggedIn: false,
       navbarItems: [
         { label: 'Accueil', route: '/' },
-        { label: 'Voir des événements', route: '/evenements' },
+        { label: 'Événements', route: '/evenements' },
         { label: 'S\'inscrire', route: '/inscription' }
       ]
     };
   },
   methods: {
+
+    logout() {
+      axios.post('http://localhost:8000/api/logout', this.visitor)
+        .then(response => {
+          if (response.status ==200) {
+            router.push('/connexion');
+          } else  {
+            console.error("Erreur de deconnexion :", response.data.message);
+          }
+        })
+        .catch(error => {
+         console.log(error.response.data.message);
+         alert(error.response.data.message || "Une erreur s'est produite.");
+        });
+
+    },
     performSearch() {
       console.log('Effectuer une recherche pour:', this.searchQuery);
       // Implémentez ici la logique de recherche si nécessaire

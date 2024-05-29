@@ -86,7 +86,7 @@ const router = createRouter({
     },
     {
       path: '/',
-      name: 'accueil',
+      name: 'PageAccueil',
       component: AccueilView
     },
     {

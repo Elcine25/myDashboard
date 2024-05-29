@@ -1,7 +1,7 @@
 <template>
   <div class="container text-center">
     <div class="rectangle">
-      <p >Connexion <img src="@\assets\icons8-utilisateur-sexe-neutre-32.png" height="20px"></p>
+        <p >Déconnexion <img src="@\assets\icons8-utilisateur-sexe-neutre-32.png" height="20px"></p>
     </div>
   </div>
 </template>

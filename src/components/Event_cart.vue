@@ -1,29 +1,37 @@
 
 
 <template>
-  <div v-if="this.evenements.length>0" class="eventCarte">
+  <div class="lesEvent">
+      <div class="ml-3">
+       <div v-if="this.evenements.length>0" class="eventCarte">
     <div v-for="(evenement, index) in this.evenements" :key="index">
     <div class="event-card">
       <!-- Badge de date -->
       <div class="date-badge">
-        <span class="date">{{evenement.date }}</span>
+        <span class="date">{{formatDate(evenement.date) }}</span>
       </div>
       <div class="event-image">
-        <!-- Affiche illustrative de l'événement -->
-        <img src="@\assets\csm_atelier_4_fc7bdce275.jpg" alt="Affiche de l'événement">
+        <img v-if="evenement.fichier" :src="imageUrl" alt="Image de l'événement">  
       </div>
-      <div class="event-info">
-        <div class="titre">{{ evenement.nom }}</div>
+      <div class=" event-info">
+        <div>
+        <RouterLink :to="{ path: '/evenements/'+evenement.id}" >{{ evenement.nom }}</RouterLink>
+        <i class="fas fa-star fa-lg" @click="voteEvent"></i>
+        </div>
         <div v-for="ville in villes" :key="ville.id" class="content">
           <p v-if="ville.id === evenement.villes_id"> {{ ville.name }}, {{ evenement.lieu }}</p>
+          
         </div>
         <textarea v-model="comment" placeholder="Commenter..." rows="1" ></textarea>
-        <i class="fas fa-star" @click="voteEvent"></i>
-        <i class="fas fa-comments" @click="viewComments"></i>
+        <i class="fas fa-comments fa-lg" @click="viewComments"></i>
       </div>
     </div>
   </div>
   </div>
+
+  <div v-else> Chargement des données... </div>
+    </div>
+    </div>
   </template>
   
   <script>
@@ -61,9 +69,8 @@ import axios from 'axios';
       getEvenements(){
             axios.get('http://localhost:8000/api/evenements')
             .then(response => {
-                this.evenements = response.data.evenements;
-            console.log(this.evenements)
             this.evenements = response.data.evenements;
+            console.log(this.evenements);
        })
       .catch(error => {
         console.error("Erreur d'affichage de l'événement", error);
@@ -75,8 +82,7 @@ import axios from 'axios';
             axios.get('http://localhost:8000/api/categories')
             .then(response => {
                 this.categories = response.data.categories;
-            console.log(this.categories)
-            this.categories = response.data.categories;
+            console.log(this.categories);
        })
       .catch(error => {
         console.error("Erreur d'affichage de catégorie", error);
@@ -88,14 +94,30 @@ import axios from 'axios';
           axios.get('http://localhost:8000/api/villes')
           .then(response => {
               this.villes = response.data.villes;
-          console.log(this.villes)
-          this.villes = response.data.villes;
+          console.log(this.villes);
      })
     .catch(error => {
       console.error("Erreur d'affichage de catégorie", error);
       alert("Une erreur s'est produite lors de l'affichage de la catégorie.");
     });
         },
+
+        formatDate(dateString) {
+    // Convertir la chaîne de date en objet Date
+    const date = new Date(dateString);
+    
+    // Récupérer le jour en format numérique
+    const day = date.getDate();
+    const monthIndex = date.getMonth();
+    const months = [
+      'JANV', 'FEV', 'MARS', 'AVR', 'MAI', 'JUIN',
+      'JUIL', 'AOÛT', 'SEPT', 'OCT', 'NOV', 'DEC'
+    ];
+    const month = months[monthIndex];
+    
+    // Concaténer le jour et le mois dans le format souhaité
+    return `${day} ${month}`;
+  },
     }
   };
   </script>
@@ -109,15 +131,18 @@ import axios from 'axios';
     height: 80px;
     background:  #7c5295e0;
   }
+  .lesEvent {
+    display: flex;
+    flex-direction: column;
+  }
   
   .event-card {
-  width: 300px; /* Largeur de la carte */
-  border: 1px solid #ccc; /* Bordure de la carte */
-  border-radius: 8px; /* Bordure arrondie */
-  overflow: hidden; /* Masquer le contenu qui dépasse de la carte */
+  width: 300px; 
+  border: 1px solid #ccc; 
+  border-radius: 8px; 
+  overflow: hidden; 
   background-color: #ccc;
   box-shadow: 0 2px 4px 0px;
-  margin-left:0.5cm;
   margin-top:0.5cm;
 }
   .event-image img {

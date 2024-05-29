@@ -5,7 +5,38 @@
   <div class="mt-3">
       <Catégories />
     </div>
-    <div class="alignement">
+    <div class="alignement row auto">
+      <div class="row ml-5">
+        <div class="ml-5">
+      <select class="ml-5" v-model="selectedCategory">
+        <option value="">Catégories</option>
+        <option v-for="categorie in categories" :key="categorie.id" :value="categorie.id">{{ categorie.name }}</option>
+      </select>
+  
+      <select class="ml-5" v-model="selectedMonth">
+        <option value="">Mois</option>
+          <option value="01">Janvier</option>
+          <option value="02">Février</option>
+          <option value="03">Mars</option>
+          <option value="04">Avril</option>
+          <option value="05">Mai</option>
+          <option value="06">Juin</option>
+          <option value="07">Juillet</option>
+          <option value="08">Août</option>
+          <option value="09">Septembre</option>
+          <option value="10">Octobre</option>
+          <option value="11">Novembre</option>
+          <option value="12">Décembre</option>
+        </select>
+  
+      <select class="ml-5" v-model="selectedCity">
+        <option value="">Villes</option>
+        <option v-for="ville in villes" :key="ville.id" :value="ville.id">{{ ville.name }}</option>
+      </select>
+  
+      <button class="ml-5" @click="filterEvents">Filtrer</button>
+    </div>
+      </div>
     <div class="ml-3">
        <div v-if="this.evenements.length>0" class="eventCarte">
     <div v-for="(evenement, index) in this.evenements" :key="index">
@@ -44,29 +75,28 @@
 <script>
 import axios from 'axios';
 import Navbar from '@/components/Navbar.vue';
-//import UserButton from '../components/UserButton.vue';
 import Foooter from '../components/Foooter.vue';
 import Catégories from '../components/Catégories.vue';
-//import Event_cart from '@/components/Event_cart.vue';
 
 export default {
   name: 'evenementsPre',
   components: {
     Navbar,
     Catégories,
-    //UserButton,
     Foooter,
-   // Event_cart
 },
 
   data() {
     return {
       evenementId:'',
-        evenements: [],
-        categories: [],
-        villes: [] ,
-        comment: '' ,
-      searchQuery: ''
+      evenements: [],
+      categories: [],
+      villes: [] ,
+      comment: '' ,
+      searchQuery: '',
+      selectedCategory: '',
+      selectedMonth: '',
+      selectedCity: ''
     }
   },
 
@@ -85,9 +115,8 @@ export default {
     getEvenements(){
             axios.get('http://localhost:8000/api/evenements')
             .then(response => {
-                this.evenements = response.data.evenements;
-            console.log(this.evenements)
             this.evenements = response.data.evenements;
+            console.log(this.evenements);
        })
       .catch(error => {
         console.error("Erreur d'affichage de l'événement", error);
@@ -99,8 +128,7 @@ export default {
             axios.get('http://localhost:8000/api/categories')
             .then(response => {
                 this.categories = response.data.categories;
-            console.log(this.categories)
-            this.categories = response.data.categories;
+            console.log(this.categories);
        })
       .catch(error => {
         console.error("Erreur d'affichage de catégorie", error);
@@ -112,8 +140,7 @@ export default {
           axios.get('http://localhost:8000/api/villes')
           .then(response => {
               this.villes = response.data.villes;
-          console.log(this.villes)
-          this.villes = response.data.villes;
+          console.log(this.villes);
      })
     .catch(error => {
       console.error("Erreur d'affichage de catégorie", error);
@@ -139,6 +166,22 @@ export default {
     // Concaténer le jour et le mois dans le format souhaité
     return `${day} ${month}`;
   },
+
+  filterEvents() {
+        const params = {
+          categorie_id: this.selectedCategory,
+          month: this.selectedMonth,
+          ville_id: this.selectedCity
+        };
+  
+        axios.get('http://localhost:8000/api/evenements', { params })
+        .then(response => {
+          this.evenements = response.data.evenements;
+        })
+        .catch(error => {
+          console.error('Erreur de filtrage des événements', error);
+        });
+      }
 
 
   }

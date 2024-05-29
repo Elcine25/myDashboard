@@ -1,69 +1,96 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <div class="container">
-    <div class="categories">
-        <button class="category" @click="searchCategory('categorie1')">
-        <div class="circle">
-            <img src="@\components\icons\training.1024x1023.png" alt="Icône Catégorie 1">
-        </div>
-        <span>Educatif</span>
-       </button>
-        <button class="category" @click="searchCategory('categorie1')">
-        <div class="circle">
-            <img src="@\components\icons\circus-tent.1024x643.png" alt="Icône Catégorie 1">
-        </div>
-        <span>Social</span>
+    <div v-if="this.categories.length>0" class="categories">
+    <button v-for="(categorie, index) in this.categories" :key="index" class="category" @click="searchCategory('educatif')">
+      <div class="circle">
+        <img v-if="categorie.fichier" :src="imageUrl" alt="Icône Catégorie 1">
+      </div>
+      <span>{{categorie.name}} ({{ getEventCompts('') }})</span>
     </button>
-        <button class="category" @click="searchCategory('categorie1')">
-        <div class="circle">
-            <img src="@\components\icons\ecology.1024x974.png" alt="Icône Catégorie 1">
-        </div>
-        <span>Environnement</span>
-    </button>
-        <button class="category" @click="searchCategory('categorie1')">
-        <div class="circle">
-            <img src="@\components\icons\internet.1024x1013.png" alt="Icône Catégorie 1">
-        </div>
-        <span>Technologie</span>
-    </button>
-        <button class="category" @click="searchCategory('categorie1')">
-        <div class="circle">
-            <img src="@\components\icons\food-wine-cheese-bread-national-culture-paris.1024x996.png" alt="Icône Catégorie 1">
-        </div>
-        <span>Culinaire</span>
-    </button>
-      <button class="category" @click="searchCategory('categorie1')">
-        <div class="circle">
-            <img src="@\components\icons\party-stripes.1023x1024.png" alt="Icône Catégorie 1">
-        </div>
-        <span>Culturel</span>
-    </button>
-        <button class="category" @click="searchCategory('categorie1')">
-        <div class="circle">
-            <img src="@\components\icons\digital-wellbeing.743x1024.png" alt="Icône Catégorie 1">
-        </div>
-        <span>Bien-être</span>
-    </button>
-        <button class="category" @click="searchCategory('categorie1')">
-        <div class="circle">
-            <img src="@\components\icons\paint-brush.1024x1024.png" alt="Icône Catégorie 1">
-        </div>
-        <span>Art</span>
-    </button>
-    </div>
+    
+  </div>
+  <div v-if="selecteCategorie">
+    <h3>Événements pour {{ selecteCategorie }}</h3>
+    <ul>
+      <li v-for="evenement in evenements" :key="evenement.id">{{ evenement.name }}</li>
+    </ul>
+  </div>
   </div>
   </template>
   
   <script>
+  import axios from 'axios';
   export default {
-    methods: {
-      searchCategory(category) {
-        // Logique pour effectuer la recherche de la catégorie spécifiée
-        console.log('Recherche de la catégorie :', category);
-        // Vous pouvez implémenter ici la logique de recherche correspondante
-        // Par exemple, rediriger vers une autre page de résultats avec les résultats de la recherche
-      }
+    data() {
+      return {
+      selecteCategorie:null,
+      evenements: [],
+      categories: [],
+      eventCounts:{}
+    };
+    },
+    computed: {
+    imageUrl() {
+      return `/storage/${this.categories.fichier}`;
     }
+  },
+    
+    mounted() {
+    this.getEventCompts();
+    this.getEvenements();
+    this.getCategories();
+  }, 
+    methods: {
+      getEvenements(){
+            axios.get('http://localhost:8000/api/evenements')
+            .then(response => {
+            this.evenements = response.data.evenements;
+            console.log(this.evenements);
+       })
+      .catch(error => {
+        console.error("Erreur d'affichage de l'événement", error);
+        alert("Une erreur s'est produite lors de l'affichage de la l'événement.");
+      });
+        },
+        getCategories(){
+            axios.get('http://localhost:8000/api/categories')
+            .then(response => {
+                this.categories = response.data.categories;
+            console.log(this.categories);
+       })
+      .catch(error => {
+        console.error("Erreur d'affichage de catégorie", error);
+        alert("Une erreur s'est produite lors de l'affichage de la catégorie.");
+      });
+        },
+
+      searchCategory(categorie) {
+      this.selectedCategory = categorie;
+      axios.get(`http://localhost:8000/api/evenements?category=${categorie}`)
+        .then(response => {
+          this.events = response.data;
+        })
+        .catch(error => {
+          console.error('Erreur lors de la récupération des événements:', error);
+          alert('Erreur lors de la récupération des événements.');
+        });
+    },
+      getEventCompts() {
+      axios.get('http://localhost:8000/api/evenements-counts')
+        .then(response => {
+          this.eventCounts = response.data;
+        })
+        .catch(error => {
+          console.error('Erreur lors de la récupération des comptes d\'événements:', error);
+          alert('Erreur lors de la récupération des comptes d\'événements.');
+        });
+    }, 
+    getEventCompt(categorie) {
+      return this.eventCounts[categorie] || 0
+    }
+      
+  }
   };
   </script>
 

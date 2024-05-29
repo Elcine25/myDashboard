@@ -4,8 +4,8 @@
           <img src="@\assets\EventPluse_text.png" width="160px" height="40px" />
         </figure>
     </div>
-  <div class="col-6 m-auto">
-    <div class="container mt-5 ">
+  <div class="col-5 m-auto ">
+    <div class="container mt-3 ">
       <div class="row justify-content-center">
         <div class="card o-hidden border-2 shadow-lg my-5 bg-custom">
     <div class="p-5">
@@ -15,22 +15,17 @@
         </figure>
     </div>
     <div class="col-5 m-auto">
-      <h2 class="mb-5">Connexion</h2>
+      <h3 class="mb-5">Connexion</h3>
     </div>
 
     <form class="user" @submit.prevent="login">
       
-        <div class="form-group p-3">
-          <input v-model="user.email" type="email" class="form-control form-control-user"
-            id="exampleInputEmail" aria-describedby="emailHelp"
-            placeholder="Addresse Email..." required>
-        </div>
-      <div class="mb-3">
-        <div class="form-group p-3">
-          <input v-model="user.password" type="password" class="form-control form-control-user"
-          id="exampleInputPassword" placeholder="Password" required >
-        </div>
-      </div>
+      <div class="form-group p-3">
+                <input v-model="visitor.email" type="email" class="form-control form-control-user" id="exampleInputEmail" placeholder="Adresse e-mail" required>
+              </div>
+              <div class="form-group p-3">
+                <input v-model="visitor.password" type="password" class="form-control form-control-user" id="exampleInputPassword" placeholder="Mot de passe" required>
+              </div>
       <p class="col-6 mx">
       <button type="button" class="btn btn-link">Mot de passe oublié ?</button>
       </p>
@@ -48,25 +43,37 @@
 </div>
 </div>
 </div>
+<div class="col-5 ">ertyfg</div>
 </template>
 
 <script>
-  import { login } from '../services/authService';
-
+import axios from 'axios';
+//import router from '@/router';      
 export default {
   data() {
     return {
+      visitor:{
       email: '',
       password: ''
+    }
     };
   },
   methods: {
     login() {
-      login(this.email, this.password).then(() => {
-        this.$router.push('/');
-      }).catch(error => {
-        console.error("There was an error!", error);
-      });
+      axios.post('http://localhost:8000/api/login', this.visitor)
+        .then(response => {
+          if (response.status ==200) {
+            //router.push('/');
+            console.log(response);
+          } else  {
+            console.error("Erreur de connexion :", response.data.message);
+          }
+        })
+        .catch(error => {
+         console.log(error.response.data.message);
+         alert(error.response.data.message || "Une erreur s'est produite.");
+        });
+
     }
   }
 };

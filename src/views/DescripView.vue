@@ -7,24 +7,28 @@
     </div>
     
     <body>
-    <div class="desc">
+    <div class="col-6">
+      <div class="desc">
       <div class="nom">{{ evenements.nom }}</div>
       <div class="j-m-a">
-        <i class="fas fa-calendar fa-lg"></i>
+        <i class="fas fa-calendar fa-lg mg-2"></i>
         <p class="ml-1">Le {{formatDate(evenements.date)}} à {{ evenements.heure }}.</p>
       </div>
       <div class="j-m-a">
-        <i class=" bi-geo "></i> <i class="bi-alarm"></i>
+        <i class=" bi-geo "></i>
         <p class="ml-1"> {{ evenements.lieu }}.</p>
       </div>
-    <div class="apropos">A-propos de cet événement</div>
+    <div class="apropos">À propos de cet événement</div>
       <div class="descrip"> {{ evenements.description }}</div>
-    </div> Catégorie
+    </div>
+    </div> 
+    <div class="col-6">
+      
+    </div>
+    Catégorie
     <div class="comments">
       <div class="affcomm">
-        <div class="profil">
-        <span>kikh</span>
-      </div>
+        
         <div class="personame">AMS Adna</div>
         <p class="com"> jcnujdàzajhcnsvbsi oazudoaz bcih dzbcuefc uvuhfbe zhbu
            ubfce uqbcoo kdcbue kdbvu dvb. Trè impatiente d'y être.</p>
@@ -131,12 +135,15 @@
 
   .desc{
     margin: 1.5cm;
+    color: rgb(99, 99, 99);
   }
   .j-m-a{
     display: flex;
-    margin: 1cm;
+    margin-left: 1cm;
   }
   .nom{
+    color: rgb(20, 20, 20);
+
     font-size: larger;
     font-weight: bold;
     margin: 10px;
@@ -146,14 +153,12 @@
     font-size: larger;
     font-weight: bold;
     margin: 10px;
+    color: rgb(20, 20, 20);
   }
   .calendar{
     width: 30px;
     position: flex;
 
-  }
-  .j-m-a{
-    margin-left: 1.5cm;
   }
   .descrip{
     width: 500px;
@@ -162,7 +167,8 @@
 
   .personame{
     font-size: larger;
-    font-weight: 500;
+    font-weight: bolder;
+    color: rgb(20, 20, 20);
     margin: 20px;
   }
   .affcomm{
@@ -174,14 +180,8 @@
   box-shadow: 0 4px 4px 0px;
   margin: 1cm;
   }
-  .profil {
-    position:absolute;
-    border-radius: 100px;
-    width: 50px;
-    height: 70px;
-    background:  #7c5295e0;
-  }
   .com{
+    color: rgb(99, 99, 99);
     margin: 10px;
   }
   .banner{
