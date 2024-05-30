@@ -9,12 +9,12 @@
       <div class="card o-hidden border-2 shadow-lg my-5 bg-custom">
         <div class="row justify-content-center">
           <div class="p-5">
-            <div class="col-2 m-auto">
+            <div class="text-center">
               <figure>
                 <img src="@/assets/EventPluse.png" width="90px" height="70px" />
               </figure>
             </div>
-            <div class="col-5 m-auto">
+            <div class="text-center">
               <h3 class="mb-5">Inscription</h3>
             </div>
             <div class="text-center">
@@ -27,16 +27,16 @@
 
             <form @submit.prevent="register">
               <div class="form-group p-3">
-                <input v-model="visitor.email" type="email" class="form-control form-control-user" id="exampleInputEmail" placeholder="Adresse e-mail" required>
+                <input v-model="user.email" type="email" class="form-control form-control-user" id="exampleInputEmail" placeholder="Adresse e-mail" required>
               </div>
               <div class="form-group p-3">
-                <input v-model="visitor.name" type="text" class="form-control form-control-user" id="exampleName" placeholder="Nom" required>
+                <input v-model="user.name" type="text" class="form-control form-control-user" id="exampleName" placeholder="Nom" required>
               </div>
               <div class="form-group p-3">
-                <input v-model="visitor.password" type="password" class="form-control form-control-user" id="exampleInputPassword" placeholder="Mot de passe" required>
+                <input v-model="user.password" type="password" class="form-control form-control-user" id="exampleInputPassword" placeholder="Mot de passe" required>
               </div>
               <div class="form-group p-3">
-                <input v-model="visitor.password_confirmation" type="password" class="form-control form-control-user" id="exampleRepeatPassword" placeholder="Confirmer le mot de passe" required>
+                <input v-model="user.password_confirmation" type="password" class="form-control form-control-user" id="exampleRepeatPassword" placeholder="Confirmer le mot de passe" required>
               </div>
               <div class="d-grid gap-2 col-6 mx-auto">
                 <button type="submit" class="btn btn-primary btn-block">Continuer</button>
@@ -72,7 +72,7 @@ import router from '@/router';
 export default {
   data() {
     return {
-      visitor: {
+      user: {
         name: '',
         email: '',
         password: '',
@@ -83,7 +83,7 @@ export default {
 
   methods: {
     register() {
-      axios.post('http://localhost:8000/api/register', this.visitor)
+      axios.post('http://localhost:8000/api/register', this.user)
         .then(response => {
           if (response.status ==200) {
             router.push('/connexion');

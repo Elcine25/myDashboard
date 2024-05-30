@@ -60,7 +60,7 @@ export default {
   methods: {
 
     logout() {
-      axios.post('http://localhost:8000/api/logout', this.visitor)
+      axios.post('http://localhost:8000/api/logout', this.user)
         .then(response => {
           if (response.status ==200) {
             router.push('/connexion');

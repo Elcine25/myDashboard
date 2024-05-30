@@ -38,7 +38,7 @@
 import axios from 'axios';
 
   export default {
-    props: {
+    
       props: {
     evenement: {
       type: Object,
@@ -68,26 +68,14 @@ import axios from 'axios';
     },
     methods: {
 
-      getImageUrl(imagePath) {
-      return `http://localhost:8000/storage/${imagePath}`; 
-    },
+      //getImageUrl(imagePath) {
+     // return `http://localhost:8000/storage/${imagePath}`; 
+    //},
 
       voteEvent() {
         // Logique pour voter pour l'événement
       },
-      sendComments() {
-        //if (this.categories.comment.trim() !== ''){
-          axios.post('http://localhost:8000/api/commentaires')
-            .then(response => {
-            this.comment = response.data.comment;
-            console.log(this.comment);
-            })
-            .catch(error => {
-        console.error("Erreur de récupération du commentaire", error);
-        //alert("Une erreur s'est produite lors de l'affichage de la l'événement.");
-        });
-        //}
-      },
+      
 
       getEvenements(){
             axios.get('http://localhost:8000/api/evenements')
@@ -137,9 +125,8 @@ import axios from 'axios';
     const month = months[monthIndex];
     return `${day} ${month}`;
   },
-}
     }
-  };
+    }
   </script>
   
   <style scoped>
