@@ -17,19 +17,29 @@
           </div>
         </div>-->
         </form>
-        <ul class="nav nav-underline">
-          <li v-for="(item, index) in navbarItems" :key="index" :class="{ 'nav-item': true, 'active': menuActif === index }">
+        <div v-if="isLoggedIn" class="l">
+          <ul class="nav nav-underline">
+          <li v-for="(item, index) in navbarItemsConnect" :key="index" :class="{ 'nav-item': true, 'active': menuActif === index }">
             <a class="nav-link" @click="setMenuActif(index)" :style="{ color: (menuActif === index) ? '#7C5295' : '' }" :href="item.route">{{ item.label }}</a>
           </li>
-        </ul>
-        <div v-if="isLoggedIn" class="mr-3">
+          <div  class="mr-3">
           <a href="/connexion">
             <UserButton />
           </a>
         </div>
-        <div  v-if="!isLoggedIn" @click="logout" class="mr-3">
+        </ul>
+        
+      </div>
+      <div class="row">
+        <ul class="nav nav-underline">
+          <li v-for="(item, index) in navbarItemsDeconnect" :key="index" :class="{ 'nav-item': true, 'active': menuActif === index }">
+            <a class="nav-link" @click="setMenuActif(index)" :style="{ color: (menuActif === index) ? '#7C5295' : '' }" :href="item.route">{{ item.label }}</a>
+          </li>
+          <div  v-if="!isLoggedIn" @click="logout" class="mr-3">
           <DeconUserButton />
         </div>
+        </ul>
+      </div>
       </div>
     </nav>
   </div>
@@ -50,7 +60,11 @@ export default {
       searchQuery: '',
       menuActif: null, // Ajout de la propriété menuActif
       isLoggedIn: false,
-      navbarItems: [
+      navbarItemsDeconnect: [
+        { label: 'Accueil', route: '/' },
+        { label: 'Événements', route: '/evenements' }
+      ],
+      navbarItemsConnect: [
         { label: 'Accueil', route: '/' },
         { label: 'Événements', route: '/evenements' },
         { label: 'S\'inscrire', route: '/inscription' }

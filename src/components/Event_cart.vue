@@ -23,7 +23,7 @@
           
         </div>
         <textarea v-model="comment[evenement.id]" placeholder="Commenter..." rows="1" ></textarea>
-        <!-- <i class="fas fa-paper-plane ms-4 fa-lg" @click="sendComments(evenement.id)"></i>-->
+        <i class="fas fa-paper-plane ms-4 fa-lg" @click="sendComments(evenement.id)"></i>
       </div>
     </div>
   </div>
@@ -62,15 +62,13 @@ import axios from 'axios';
 
     mounted() {
       this.getEvenements();
-      this.getCategories();
-      this.getVilles();
-      this.sendComments()
+      this.getCategories()
     },
     methods: {
 
-      //getImageUrl(imagePath) {
-     // return `http://localhost:8000/storage/${imagePath}`; 
-    //},
+      getImageUrl(imagePath) {
+      return `http://localhost:8000/storage/${imagePath}`; 
+      },
 
       voteEvent() {
         // Logique pour voter pour l'événement
@@ -99,18 +97,6 @@ import axios from 'axios';
         console.error("Erreur d'affichage de catégorie", error);
         alert("Une erreur s'est produite lors de l'affichage de la catégorie.");
       });
-        },
-
-        getVilles(){
-          axios.get('http://localhost:8000/api/villes')
-          .then(response => {
-              this.villes = response.data.villes;
-          console.log(this.villes);
-     })
-    .catch(error => {
-      console.error("Erreur d'affichage de catégorie", error);
-      alert("Une erreur s'est produite lors de l'affichage de la catégorie.");
-    });
         },
 
         formatDate(dateString) {
