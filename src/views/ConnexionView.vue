@@ -48,7 +48,7 @@
 
 <script>
 import axios from 'axios';
-//import router from '@/router';      
+import router from '@/router';      
 export default {
   data() {
     return {
@@ -63,7 +63,7 @@ export default {
       axios.post('http://localhost:8000/api/login', this.visitor)
         .then(response => {
           if (response.status ==200) {
-            //router.push('/');
+            router.push('/');
             console.log(response);
           } else  {
             console.error("Erreur de connexion :", response.data.message);

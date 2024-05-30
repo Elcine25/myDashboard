@@ -27,8 +27,8 @@
             <UserButton />
           </a>
         </div>
-        <div  v-if="!isLoggedIn"  class="mr-3">
-          <button @click="logout"><DeconUserButton /></button>
+        <div  v-if="!isLoggedIn" @click="logout" class="mr-3">
+          <DeconUserButton />
         </div>
       </div>
     </nav>

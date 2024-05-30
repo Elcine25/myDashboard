@@ -4,9 +4,9 @@
     <div v-if="this.categories.length>0" class="categories">
     <button v-for="(categorie, index) in this.categories" :key="index" class="category" @click="searchCategory('educatif')">
       <div class="circle">
-        <img v-if="categorie.fichier" :src="imageUrl" alt="Icône Catégorie 1">
+        <img v-if="categorie.fichier" :src="getImageUrl(categorie.fichier)" alt="Icône Catégorie 1">
       </div>
-      <span>{{categorie.name}} ({{ getEventCompts('') }})</span>
+      <span>{{categorie.name}} ({{ getEventCompts('eventCounts') }})</span>
     </button>
     
   </div>
@@ -35,6 +35,13 @@
       return `/storage/${this.categories.fichier}`;
     }
   },
+
+  props: {
+    categorie: {
+      type: Object,
+      required: true
+    }
+  },
     
     mounted() {
     this.getEventCompts();
@@ -42,6 +49,10 @@
     this.getCategories();
   }, 
     methods: {
+      getImageUrl(imagePath) {
+      return `http://localhost:8000/storage/${imagePath}`; 
+    },
+      
       getEvenements(){
             axios.get('http://localhost:8000/api/evenements')
             .then(response => {

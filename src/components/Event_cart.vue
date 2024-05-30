@@ -11,7 +11,7 @@
         <span class="date">{{formatDate(evenement.date) }}</span>
       </div>
       <div class="event-image">
-        <img v-if="evenement.fichier" :src="imageUrl" alt="Image de l'événement">  
+        <img v-if="evenement.fichier" :src="getImageUrl(evenement.fichier)" alt="Image de l'événement">  
       </div>
       <div class=" event-info">
         <div>
@@ -22,8 +22,8 @@
           <p v-if="ville.id === evenement.villes_id"> {{ ville.name }}, {{ evenement.lieu }}</p>
           
         </div>
-        <textarea v-model="comment" placeholder="Commenter..." rows="1" ></textarea>
-        <i class="fas fa-comments fa-lg" @click="viewComments"></i>
+        <textarea v-model="comment[evenement.id]" placeholder="Commenter..." rows="1" ></textarea>
+        <!-- <i class="fas fa-paper-plane ms-4 fa-lg" @click="sendComments(evenement.id)"></i>-->
       </div>
     </div>
   </div>
@@ -39,31 +39,54 @@ import axios from 'axios';
 
   export default {
     props: {
-      eventName: String,
-      eventLocation: String,
-      imageUrl: String
-    },
+      props: {
+    evenement: {
+      type: Object,
+      required: true
+    }
+  },
     data() {
       return {
         evenementId:'',
         evenements: [],
         categories: [],
         villes: [] ,
-        comment: '' // Champ de saisie de commentaire
+          comment: {}// Champ de saisie de commentaire
       };
     },
+    computed: {
+    imageUrl() {
+      return `/storage/${this.categories.fichier}`;
+    }
+     },
 
     mounted() {
       this.getEvenements();
       this.getCategories();
       this.getVilles();
+      this.sendComments()
     },
     methods: {
+
+      getImageUrl(imagePath) {
+      return `http://localhost:8000/storage/${imagePath}`; 
+    },
+
       voteEvent() {
         // Logique pour voter pour l'événement
       },
-      viewComments() {
-        // Logique pour afficher les commentaires de l'événement
+      sendComments() {
+        //if (this.categories.comment.trim() !== ''){
+          axios.post('http://localhost:8000/api/commentaires')
+            .then(response => {
+            this.comment = response.data.comment;
+            console.log(this.comment);
+            })
+            .catch(error => {
+        console.error("Erreur de récupération du commentaire", error);
+        //alert("Une erreur s'est produite lors de l'affichage de la l'événement.");
+        });
+        //}
       },
 
       getEvenements(){
@@ -103,10 +126,8 @@ import axios from 'axios';
         },
 
         formatDate(dateString) {
-    // Convertir la chaîne de date en objet Date
     const date = new Date(dateString);
     
-    // Récupérer le jour en format numérique
     const day = date.getDate();
     const monthIndex = date.getMonth();
     const months = [
@@ -114,10 +135,9 @@ import axios from 'axios';
       'JUIL', 'AOÛT', 'SEPT', 'OCT', 'NOV', 'DEC'
     ];
     const month = months[monthIndex];
-    
-    // Concaténer le jour et le mois dans le format souhaité
     return `${day} ${month}`;
   },
+}
     }
   };
   </script>

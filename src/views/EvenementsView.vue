@@ -37,34 +37,10 @@
       <button class="ml-5" @click="filterEvents">Filtrer</button>
     </div>
       </div>
-    <div class="ml-3">
-       <div v-if="this.evenements.length>0" class="eventCarte">
-    <div v-for="(evenement, index) in this.evenements" :key="index">
-    <div class="event-card">
-      <!-- Badge de date -->
-      <div class="date-badge">
-        <span class="date">{{formatDate(evenement.date) }}</span>
-      </div>
-      <div class="event-image">
-        <!-- Affiche illustrative de l'événement -->
-        <img src="@\assets\csm_atelier_4_fc7bdce275.jpg" alt="Affiche de l'événement">
-      </div>
-      <div class=" event-info">
-        <div>
-        <RouterLink :to="{ path: '/evenements/'+evenement.id}" >{{ evenement.nom }}</RouterLink>
-        <i class="fas fa-star fa-lg" @click="voteEvent"></i>
-        </div>
-        <div v-for="ville in villes" :key="ville.id" class="content">
-          <p v-if="ville.id === evenement.villes_id"> {{ ville.name }}, {{ evenement.lieu }}</p>
-          
-        </div>
-        <textarea v-model="comment" placeholder="Commenter..." rows="1" ></textarea>
-        <i class="fas fa-comments fa-lg" @click="viewComments"></i>
-      </div>
+      <div class="row">
+      <Event_cart/>
     </div>
-  </div>
-  </div>
-      </div>
+      
     </div>
 
     <div class="mt-3">
