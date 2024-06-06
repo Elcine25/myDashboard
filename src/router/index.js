@@ -4,15 +4,9 @@ import ConnexionView from '../views/ConnexionView.vue'
 import AccueilView from '../views/AccueilView.vue'
 import EvenementsView from '../views/EvenementsView.vue'
 import DescripView from '../views/DescripView.vue'
-import UserRegister from '@/views/UserRegister.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    {
-      path: '/register',
-      name: 'register',
-      component: UserRegister
-    },
     
     {
       path: '/inscription',

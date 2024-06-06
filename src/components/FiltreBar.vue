@@ -26,10 +26,8 @@
   export default {
     data() {
       return {
-        categories: [],
         villes: [],
         evenements: [],
-        selectedCategory: '',
         selectedDate: '',
         selectedCity: ''
       };
@@ -40,18 +38,6 @@
       this.getVilles();
     },
     methods: {
-        getEvenements(){
-            axios.get('http://localhost:8000/api/evenements')
-            .then(response => {
-                this.evenements = response.data.evenements;
-            console.log(this.evenements)
-            this.evenements = response.data.evenements;
-       })
-      .catch(error => {
-        console.error("Erreur d'affichage de l'événement", error);
-        alert("Une erreur s'est produite lors de l'affichage de la l'événement.");
-      });
-        },
 
         getCategories(){
             axios.get('http://localhost:8000/api/categories')

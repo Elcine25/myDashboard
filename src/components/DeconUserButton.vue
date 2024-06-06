@@ -25,7 +25,7 @@ export default {
 <style scoped>
 .rectangle{
     border-radius: 10px;
-    background-color: #7C5295;
+    background-color: #52319e;
     width: 150px;
     height: 40px;
     margin: auto;

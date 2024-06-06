@@ -5,15 +5,33 @@
   <div class="mt-3">
       <Catégories />
     </div>
-    <div class="alignement row auto">
+    <div class="alignement text-center ml-5">
+      
+      <div class="d-flex justify-content-between">
+        <div class="input-group">
+          <input type="text" class="form-control bg-light border-1" v-model="searchQuery" @keyup.enter="performSearch" placeholder="Rechercher...">
+          <div class="input-group-append">
+            <button class="btn btn-primary bg-light" type="button" @click="performSearch">
+              <i class="fas fa-search fa-sm" height="20px"></i>
+            </button>
+          </div>
+        </div>
+            <select class="ml-5" v-model="selectedCity">
+        <option value="">Villes</option>
+        <option v-for="ville in villes" :key="ville.id" :value="ville.id">{{ ville.name }}</option>
+      </select>
+            <div class="d-flex align-items-center ml-5 filter-options">
+                <span class="mr-2">Tous</span>
+                <span class="mr-2">En ligne</span>
+                <span class="mr-2">Aujourd'hui</span>
+                <span class="mr-2">Ce mois</span>
+            </div>
+        </div>
+    
       <div class="row ml-5">
         <div class="ml-5">
-      <select class="ml-5" v-model="selectedCategory">
-        <option value="">Catégories</option>
-        <option v-for="categorie in categories" :key="categorie.id" :value="categorie.id">{{ categorie.name }}</option>
-      </select>
   
-      <select class="ml-5" v-model="selectedMonth">
+      <!--<select class="ml-5" v-model="selectedMonth">
         <option value="">Mois</option>
           <option value="01">Janvier</option>
           <option value="02">Février</option>
@@ -27,16 +45,14 @@
           <option value="10">Octobre</option>
           <option value="11">Novembre</option>
           <option value="12">Décembre</option>
-        </select>
+        </select>-->
   
-      <select class="ml-5" v-model="selectedCity">
-        <option value="">Villes</option>
-        <option v-for="ville in villes" :key="ville.id" :value="ville.id">{{ ville.name }}</option>
-      </select>
+      
   
       <button class="ml-5" @click="filterEvents">Filtrer</button>
     </div>
       </div>
+      
       <div class="row">
       <Event_cart/>
     </div>
@@ -72,7 +88,12 @@ export default {
       searchQuery: '',
       selectedCategory: '',
       selectedMonth: '',
-      selectedCity: ''
+      selectedCity: '',
+      ItemsMenu: [
+        { label: 'Tout', route: '/' },
+        { label: 'Aujourd\'hui', route: '/evenements' },
+        { label: 'Ce mois', route: '/inscription' }
+      ]
     }
   },
 
@@ -167,7 +188,23 @@ export default {
 
 <style scoped>
 /*style du navbar*/
+.mr-2 {
+  color: #52319e;
+  font-weight: bolder;
+}
 
+.fa-search {
+  color:#52319e;
+}
+.input-group {
+  width: 300px; /* Ajustez la largeur selon vos besoins */
+
+}
+
+.input-group-append button {/* Style pour centrer verticalement l'icône de recherche */
+  display: flex;
+  align-items: center;
+}
 
   /* Styles de la carte d'événement */
   .alignement {

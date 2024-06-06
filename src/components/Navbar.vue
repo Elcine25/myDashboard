@@ -6,23 +6,12 @@
         <a class="navbar-brand">
           <img src="@\assets\EventPluse.png" alt="Bootstrap" width="30" height="24">
         </a>
-
-        <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-        <!--<div class="input-group">
-          <input type="text" class="form-control bg-light border-1" v-model="searchQuery" @keyup.enter="performSearch" placeholder="Rechercher...">
-          <div class="input-group-append">
-            <button class="btn btn-primary bg-light" type="button" @click="performSearch">
-              <i class="fas fa-search fa-sm" height="20px"></i>
-            </button>
-          </div>
-        </div>-->
-        </form>
-        <div v-if="isLoggedIn" class="l">
+        <div v-if="!isLoggedIn" class="text-end">
           <ul class="nav nav-underline">
           <li v-for="(item, index) in navbarItemsConnect" :key="index" :class="{ 'nav-item': true, 'active': menuActif === index }">
-            <a class="nav-link" @click="setMenuActif(index)" :style="{ color: (menuActif === index) ? '#7C5295' : '' }" :href="item.route">{{ item.label }}</a>
+            <a class="nav-link" @click="setMenuActif(index)" :style="{ color: (menuActif === index) ? '#52319e' : '' }" :href="item.route">{{ item.label }}</a>
           </li>
-          <div  class="mr-3">
+          <div  class="m-6">
           <a href="/connexion">
             <UserButton />
           </a>
@@ -30,12 +19,12 @@
         </ul>
         
       </div>
-      <div class="row">
+      <div v-if="isLoggedIn" class="row ">
         <ul class="nav nav-underline">
           <li v-for="(item, index) in navbarItemsDeconnect" :key="index" :class="{ 'nav-item': true, 'active': menuActif === index }">
-            <a class="nav-link" @click="setMenuActif(index)" :style="{ color: (menuActif === index) ? '#7C5295' : '' }" :href="item.route">{{ item.label }}</a>
+            <a class="nav-link" @click="setMenuActif(index)" :style="{ color: (menuActif === index) ? '#52319e' : '' }" :href="item.route">{{ item.label }}</a>
           </li>
-          <div  v-if="!isLoggedIn" @click="logout" class="mr-3">
+          <div @click="logout" class="mr-3">
           <DeconUserButton />
         </div>
         </ul>
@@ -46,7 +35,8 @@
 </template>
 
 <script>
-import router from '@/router';
+//import router from '@/router';
+import { useToast } from "vue-toastification";
 import axios from 'axios';
 import UserButton from '../components/UserButton.vue';
 import DeconUserButton from '../components/DeconUserButton.vue'
@@ -71,15 +61,27 @@ export default {
       ]
     };
   },
+  mounted(){
+    this.verifiedLogin();
+  },
   methods: {
 
     logout() {
-      axios.post('http://localhost:8000/api/logout', this.user)
+      const toast = useToast();
+      axios.post('http://localhost:8000/api/logout', {},{
+      headers: {
+         'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+       },
+      })
         .then(response => {
           if (response.status ==200) {
-            router.push('/connexion');
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('userEvent');
+            window.location='/';
+            toast.success("Déconnexion réussie !");
           } else  {
             console.error("Erreur de deconnexion :", response.data.message);
+            toast.error("Déconnexion échoueé !");
           }
         })
         .catch(error => {
@@ -88,6 +90,40 @@ export default {
         });
 
     },
+
+    login() {
+      const toast = useToast();
+      axios.post('http://localhost:8000/api/login', this.user)
+        .then(response => {
+          if (response.status ==200) {
+            toast.success("Connexion réussie !");
+            localStorage.setItem('authToken', response.data.access_token);
+            localStorage.setItem('userEvent', response.data.user);
+            window.location='/'
+            console.log(response);
+          } else  {
+            console.error("Erreur de connexion :", response.data.message);
+            toast.error("Erreur de connexion :", response.data.message);
+          }
+        })
+        .catch(error => {
+         console.log(error.response.data.message);
+         const errorMessage = error.response.data.message || "Une erreur s'est produite.";
+          toast.error(errorMessage);
+          console.error(errorMessage);
+        });
+
+    },
+
+    verifiedLogin(){
+    if(localStorage.getItem('authToken') && localStorage.getItem('userEvent')){
+      this.isLoggedIn=true;
+    }
+    else{
+      this.isLoggedIn=false;
+    }
+    },
+
     performSearch() {
       console.log('Effectuer une recherche pour:', this.searchQuery);
       // Implémentez ici la logique de recherche si nécessaire
@@ -101,7 +137,7 @@ export default {
 
 <style scoped>
 .custom-bg-color {
-  background-color: #e7dede /* Remplacez #ff0000 par votre couleur personnalisée */
+  background-color: #d4d2d8 /* Remplacez #ff0000 par votre couleur personnalisée */
 }
 
 .form-control {
@@ -118,23 +154,10 @@ export default {
   border-bottom-right-radius: 20px;
   height: 37px;
 }
-.fa-search {
-  color:#7C5295;
-}
-.input-group {
-  width: 300px; /* Ajustez la largeur selon vos besoins */
 
-}
-
-.input-group-append button {/* Style pour centrer verticalement l'icône de recherche */
-  display: flex;
-  align-items: center;
-}
 .nav-link {
-  color: #7C5295;
+  color: #ffffff;
 }
-
-
 
 .active{
   color: red !important;

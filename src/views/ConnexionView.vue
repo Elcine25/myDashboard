@@ -9,7 +9,7 @@
       <div class="row justify-content-center">
         <div class="card o-hidden border-2 shadow-lg my-5 bg-custom">
     <div class="p-5">
-      <div class="col-4 m-auto">
+      <div class="text-center">
         <figure>
           <img src="@\assets\EventPluse.png" width="90px" height="70px" />
         </figure>
@@ -45,7 +45,9 @@
 
 <script>
 import axios from 'axios';
-import router from '@/router';      
+//import router from '@/router';   
+import { useToast } from "vue-toastification";
+
 export default {
   data() {
     return {
@@ -56,19 +58,28 @@ export default {
     };
   },
   methods: {
+    
     login() {
+      const toast = useToast();
       axios.post('http://localhost:8000/api/login', this.user)
         .then(response => {
           if (response.status ==200) {
-            router.push('/');
+            
+            toast.success("Connexion réussie !");
+            localStorage.setItem('authToken', response.data.access_token);
+            localStorage.setItem('userEvent', response.data.user);
+            window.location='/'
             console.log(response);
           } else  {
             console.error("Erreur de connexion :", response.data.message);
+            toast.error("Erreur de connexion :", response.data.message);
           }
         })
         .catch(error => {
          console.log(error.response.data.message);
-         alert(error.response.data.message || "Une erreur s'est produite.");
+         const errorMessage = error.response.data.message || "Une erreur s'est produite.";
+          toast.error(errorMessage);
+          console.error(errorMessage);
         });
 
     }
@@ -79,7 +90,7 @@ export default {
 <style scoped>
 
 .btn-primary  {
-  background-color:  #7C5295;
-  border-color: #7C5295;
+  background-color:  #52319e;
+  border-color: #52319e;
 }
 </style>

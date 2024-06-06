@@ -68,6 +68,7 @@
 <script>
 import axios from 'axios';
 import router from '@/router';
+import { useToast } from "vue-toastification";
 
 export default {
   data() {
@@ -83,27 +84,33 @@ export default {
 
   methods: {
     register() {
-      axios.post('http://localhost:8000/api/register', this.user)
-        .then(response => {
-          if (response.status ==200) {
-            router.push('/connexion');
-          } else  {
-            console.error("Erreur lors de l'inscription :", response.data.message);
-          }
-        })
-        .catch(error => {
-         console.log(error.response.data.message);
-         alert(error.response.data.message || "Une erreur s'est produite.");
-        });
+        const toast = useToast();
+        axios.post('http://localhost:8000/api/register', this.user)
+            .then(response => {
+                if (response.status === 200) {
+                    toast.success("Inscription réussie !");
+                    router.push('/connexion');
+                } else {
+                    const errorMessage = response.data.message || "Erreur lors de l'inscription.";
+                    console.error("Erreur lors de l'inscription :", errorMessage);
+                    toast.error(errorMessage);
+                }
+            })
+            .catch(error => {
+                const errorMessage = error.response?.data?.message || "Une erreur s'est produite.";
+                console.error("Erreur :", errorMessage);
+                toast.error(errorMessage);
+            });
     }
-  }
+}
+
 };
 </script>
 
 
 <style scoped>
 :root {
-    --primary-color: #7C5295; /* Remplacez cette couleur par celle de votre choix */
+    --primary-color: #52319e; /* Remplacez cette couleur par celle de votre choix */
     --secondary-color: #6c757d;
     --success-color: #28a745;
     --info-color: #17a2b8;
@@ -124,13 +131,13 @@ export default {
   color: #676767;
 }
 .btn-primary  {
-  background-color:  #7C5295;
-  border-color: #7C5295;
+  background-color:  #52319e;
+  border-color: #52319e;
 }
 
 .btn-danger  {
   background-color:  #fff;
-  border-color: #676767;
+  border-color: #423a3a;
 }
 
 

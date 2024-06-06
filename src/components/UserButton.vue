@@ -19,9 +19,9 @@ export default {
 <style scoped>
 .rectangle{
     border-radius: 10px;
-    background-color: #7C5295;
-    width: 110px;
-    height: 30px;
+    background-color: #52319e;
+    width: 130px;
+    height: 40px;
     margin: auto;
 }
 p{
