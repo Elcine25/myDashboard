@@ -13,8 +13,8 @@ h3,
 h4,
 h5, 
 h6 {
-    color: #092a49;
-    font-family: 'Oswald', sans-serif;
+    color: #010d18;
+    font-family:  sans-serif;
 }
 
 a {
@@ -229,7 +229,7 @@ a:focus {
     
     .navbar.nav-sticky {
         padding: 10px 60px;
-        background: #092a49 !important;
+        background: #52319e !important;
     }
     
     .page .navbar {
@@ -247,7 +247,7 @@ a:focus {
 @media (max-width: 991.98px) {   
     .navbar {
         padding: 15px;
-        background: #092a49 !important;
+        background: #52319e !important;
     }
     
     .navbar a.nav-link {
@@ -1091,7 +1091,7 @@ a:focus {
 }
 
 .blog .blog-meta i {
-    color: #0796fe;
+    color: #52319e;
     margin: 0 2px 0 10px;
 }
 
@@ -1113,7 +1113,7 @@ a:focus {
     font-size: 14px;
     font-weight: 400;
     letter-spacing: 1px;
-    color: #0796fe;
+    color: #52319e;
     transition: .3s;
 }
 
@@ -1128,7 +1128,7 @@ a:focus {
     height: 2px;
     top: 10px;
     left: 0;
-    background: #0796fe;
+    background: #52319e;
 }
 
 .blog .owl-nav {
@@ -1219,7 +1219,6 @@ a:focus {
 .contact {
     position: relative;
     width: 100%;
-    padding: 45px 0 15px 0;
 }
 
 .contact .contact-info {
@@ -1243,12 +1242,11 @@ a:focus {
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid rgba(0, 0, 0, .1);
 }
 
 .contact .contact-icon i {
     font-size: 18px;
-    color: #0796fe;
+    color: #52319e;
 }
 
 .contact .contact-text {
@@ -1370,7 +1368,7 @@ a:focus {
     position: relative;
     margin-top: 45px;
     padding-top: 90px;
-    background: #092a49;
+    background: #52319e;
 }
 
 .footer .footer-contact,

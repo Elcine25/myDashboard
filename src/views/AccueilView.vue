@@ -2,59 +2,58 @@
   <div class="">
     <div id="accueil">
       <nav>
-        <Navbar />
+        <NaavBar />
       </nav>
       <!-- Carousel Start -->
       <div class="carousel">
-          <div class="owl-carousel">
-            <div class="carousel-item">
-              <div class="carousel-img">
-                <img
-                  src="/home/adna/Documents/projest_mémoire/myDashboard (copie)/src/assets/csm_atelier_4_fc7bdce275.jpg"
-                  alt="Image">
-              </div>
-              <div class="carousel-text">
-                <h1>EVENTPULSE</h1>
-                <p>
-                  Explorez l'exitation: trouvez votre prochain grand moment !
-                </p>
-                <div class="carousel-btn">
-                  <a class="btn" href=""><i class="fa fa-link"></i>Voir les Événements</a>
-                </div>
-              </div>
+        <div class="owl-carousel">
+          <div class="carousel-item">
+            <div class="carousel-img">
+              <img
+                src="/home/adna/Documents/projest_mémoire/myDashboard (copie)/src/assets/csm_atelier_4_fc7bdce275.jpg"
+                alt="Image">
             </div>
-            <div class="carousel-item">
-              <div class="carousel-img">
-                <img src="/home/adna/Documents/projest_mémoire/myDashboard (copie)/src/assets/banner.jpg   "
-                  alt="Image">
-              </div>
-              <div class="carousel-text">
-                <h1>EVENTPULSE</h1>
-                <p>
-                  Explorez des occasions de détentes !
-                </p>
-                <div class="carousel-btn">
-                  <a class="btn" href=""><i class="fa fa-link"></i>Voir les Événements</a>
-                </div>
-              </div>
-            </div>
-            <div class="carousel-item">
-              <div class="carousel-img">
-                <img
-                  src="/home/adna/Documents/projest_mémoire/myDashboard (copie)/src/assets/csm_atelier_4_fc7bdce275.jpg"
-                  alt="Image">
-              </div>
-              <div class="carousel-text">
-                <h1>EVENTPULSE</h1>
-                <p>
-                  Explorez l'exitation: trouvez votre prochain grand moment !
-                </p>
-                <div class="carousel-btn">
-                  <a class="btn" href=""><i class="fa fa-link"></i>Voir les Événements</a>
-                </div>
+            <div class="carousel-text">
+              <h1>EVENTPULSE</h1>
+              <p>
+                Explorez l'exitation: trouvez votre prochain grand moment !
+              </p>
+              <div class="carousel-btn">
+                <a class="btn" href="/evenements"><i class="fa fa-link"></i>Voir les Événements</a>
               </div>
             </div>
           </div>
+          <!--<div class="carousel-item">
+            <div class="carousel-img">
+              <img src="/home/adna/Documents/projest_mémoire/myDashboard (copie)/src/assets/banner.jpg   " alt="Image">
+            </div>
+            <div class="carousel-text">
+              <h1>EVENTPULSE</h1>
+              <p>
+                Explorez des occasions de détentes !
+              </p>
+              <div class="carousel-btn">
+                <a class="btn" href=""><i class="fa fa-link"></i>Voir les Événements</a>
+              </div>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <div class="carousel-img">
+              <img
+                src="/home/adna/Documents/projest_mémoire/myDashboard (copie)/src/assets/csm_atelier_4_fc7bdce275.jpg"
+                alt="Image">
+            </div>
+            <div class="carousel-text">
+              <h1>EVENTPULSE</h1>
+              <p>
+                Explorez l'exitation: trouvez votre prochain grand moment !
+              </p>
+              <div class="carousel-btn">
+                <a class="btn" href=""><i class="fa fa-link"></i>Voir les Événements</a>
+              </div>
+            </div>
+          </div>-->
+        </div>
       </div>
       <!-- Carousel End -->
 
@@ -74,27 +73,18 @@
 </template>
 
 <script>
-//import UserButton from '../components/UserButton.vue';
 import axios from 'axios';
-import Navbar from '@/components/Navbar.vue';
+import NaavBar from '@/components/NaavBar.vue';
 import Foooter from '../components/Foooter.vue';
 import Catégories from '../components/Catégories.vue';
 import Event_cart from '@/components/Event_cart.vue';
 
 export default {
-  props: {
-    evenement: {
-      type: Object,
-      required: true
-    }
-  },
   name: 'PageAccueil',
   components: {
     Catégories,
-    Navbar,
+    NaavBar,
     Event_cart,
-    //MyCaroussel,
-    // UserButton,
     Foooter
   },
 
@@ -103,6 +93,7 @@ export default {
       evenements: [],
       categories: [],
       villes: [],
+      votes: [],
       comment: ''
     }
   },
@@ -179,5 +170,4 @@ export default {
 };
 
 </script>
-<style>
-</style>
+<style></style>

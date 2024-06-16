@@ -2,7 +2,7 @@
 <template>
   <div class="service mt-100">
             <div class="container">
-                <div class="section-header">
+                <div class="section-header mt-5">
                     <h2>Catégories d'événements</h2>
                 </div>
                 <div v-if="categories.length > 0"  class="row">

@@ -1,6 +1,6 @@
 <template>
   <nav>
-    <NaavBar />
+    <Navbar />
   </nav>
   <!-- Carousel Start -->
   <div class="carousel">
@@ -37,49 +37,15 @@
           <div class="apropos ml-5">À propos de cet événement</div>
           <div class="descrip"> {{ evenements.description }}</div>
         </div>
-        <div class="contact">
-          <div class="container">
-            <div class="row align-items-center">
-              <div class="col">
-                <div class="contact-info">
-                  <div class="contact-icon">
-                    <i class="fa fa-envelope"></i>
-                  </div>
-                  <div class="contact-text">
-                    <h3>Voulez-vous être informé par courrier des événements similaires à celui-ci ?</h3>
-                    <div class="row"><button type="submit" class=" rectangle btn mt-2">NON </button>
-          <button type="submit" class=" rectangle btn mt-2">OUI </button>
-        </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
       <div class="col-6">
-        <div class="mt-2">
-          <div class="banner-rating">
-            <ul>
-              <li class="rating-star">
-                <span class="nom">{{ nombreVotes }} Personne(s) aime(ent) l'idée de cet événement !</span>
-              </li>
-              <li>
-                <i class="ml-3 m fas btn fa-star fa-lg"
-                  :class="{ 'text-primary': hasvoted, 'text-secondary': !hasvoted }" @click="addVote(evenements.id)">
-                </i>
-              </li>g
-            </ul>
-          </div>
-        </div>
-        <div class="circle mt-3"></div>
-        <div class="ml-5 nom">Que-dit la communauté à propos de cet événement ?</div>
+        <div class="circle mt-5"></div>
+        <div class="ml-5 nom">Commentaires</div>
         <div class="comments-container">
           <div class="comment" v-for="(comment, index) in commentaires" :key="index">
             <div class="comment-content">
               <div class="username">
-                <div>{{ comment.user_name }} | {{ formatTimestamp(comment.created_at) }}</div>
-
+                <div >{{ comment.user_name }}</div>
               </div>
               <div class="message">{{ comment.contenu }}</div>
             </div>
@@ -88,8 +54,19 @@
 
         <form @submit.prevent="addComments(evenementID)" class="form">
           <textarea class="form-control mt-3" v-model="model.comment.contenu" placeholder="Commenter..."></textarea>
-          <button type="submit" class=" rectangle btn mt-2">Envoyer </button>
+          <button type="submit" class="btn">Envoyer </button>
         </form>
+        <!--<div class="timestamp">{{ formatTimestamp(comment.timestamp) }}</div>
+      </div><div class="comments border ">
+        <div v-if="comments.length > 0">
+        <div v-for="(comment, index) in comments" :key="index" class="affcomm">
+          <div class="personname"></div>
+          <p class="commentaire"></p>
+        </div>
+      </div>
+      
+      <div class="ml-5" v-else>Pas de commentaires pour cet événement.</div>
+      </div>-->
       </div>
     </div>
   </body>
@@ -102,15 +79,13 @@
 import axios from 'axios'
 import Foooter from '../components/Foooter.vue';
 import { useToast } from "vue-toastification";
-import NaavBar from '@/components/NaavBar.vue';
-//import CalendarLinks from '@/components/CalendarLinks.vue';
+import Navbar from '@/components/Navbar.vue';
 
 export default {
   components: {
     //UserButton,
     Foooter,
-    //CalendarLinks,
-    NaavBar
+    Navbar
   },
   name: 'descripEvent',
   data() {
@@ -121,8 +96,6 @@ export default {
       evenementId: '',
       categories: [],
       users: [],
-      hasvoted: false,
-      nombreVotes: 0,
       commentaires: [],
       model: {
         comment: {
@@ -132,81 +105,14 @@ export default {
     }
   },
   mounted() {
-    this.evenementID = this.$route.params.id;
-    this.getEvenements();
+    this.evenementID = this.$route.params.id
     this.fetchComments();
-    this.fetchVotes();
   },
   methods: {
-    addVote(evenementId) {
-      const toast = useToast();
-      if (localStorage.getItem('authToken') && localStorage.getItem('userEvent')) {
-        this.isLoggedIn = true;
-        axios.post(`http://localhost:8000/api/evenements/votes`, { evenement_id: evenementId }, {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-          },
-        })
-          .then(response => {
-            console.log(response.data);
-            toast.success(response.data.message);
-            this.getEvenements()
-            this.fetchVotes()
-          })
-          .catch(error => {
-            console.error("Aucun vote.", error);
-          });
-      }
-      else {
-        this.isLoggedIn = false;
-        toast.error('Veillez vous connecter')
-      }
-    },
-
-    hasVoted(evenementId) {
-      return this.votes.includes(evenementId);
-    },
-
-    updateVote(evenementId) {
-      if (this.votes.includes(evenementId)) {
-        this.votes = this.votes.filter(id => id !== id);
-      } else {
-        this.votes.push(evenementId);
-      }
-    },
-
-    fetchVotes() {
-      if (localStorage.getItem('authToken')) {
-        axios.get(`http://localhost:8000/api/evenements/votes/${this.evenementID}`, {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-          }
-        })
-          .then(response => {
-            this.hasvoted = response.data.hasVoted;
-          })
-          .catch(error => {
-            console.error("Erreur lors de la récupération des votes", error);
-          });
-      }
-    },
-
-    getEvenements() {
-      axios.get('http://localhost:8000/api/evenements/' + this.evenementID)
-        .then(response => {
-          this.evenements = response.data.evenements;
-          this.nombreVotes = response.data.nombre_votes;
-          console.log(this.evenements);
-          console.log(this.nombre_votes);
-        })
-        .catch(error => {
-          console.error("Erreur d'affichage de l'événement", error);
-          alert("Une erreur s'est produite lors de l'affichage de la l'événement.");
-        });
-    },
     getImageUrl(imagePath) {
       return `http://localhost:8000/storage/Fichiers/${imagePath}`;
     },
+
     addComments() {
       const toast = useToast();
       if (localStorage.getItem('authToken') && localStorage.getItem('userEvent')) {
@@ -221,7 +127,6 @@ export default {
             console.log(contenu);
             this.model.comment.contenu = '';
             toast.success(response.data.message);
-            this.fetchComments()
           })
           .catch(error => {
             console.error("Erreur d'affichage des commentaires", error);
@@ -233,6 +138,7 @@ export default {
       }
 
     },
+
     fetchComments() {
       axios.get(`http://localhost:8000/api/commentaires/${this.evenementID}/commentaires`)
         .then(response => {
@@ -244,6 +150,8 @@ export default {
         });
 
     },
+
+
     formatDate(dateString) {
       const date = new Date(dateString);
       const day = date.getDate();
@@ -253,23 +161,10 @@ export default {
         'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
       ];
       const month = months[monthIndex];
+
+      // Concaténer le jour et le mois dans le format souhaité
       return `${day} ${month}`;
     },
-    formatTimestamp(timestamp) {
-      const date = new Date(timestamp);
-      const day = date.getDate();
-      const monthIndex = date.getMonth();
-      const year = date.getFullYear();
-      const hours = date.getHours();
-      const minutes = date.getMinutes().toString().padStart(2, '0');
-      const months = [
-        'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
-        'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
-      ];
-      const month = months[monthIndex];
-
-      return `${day} ${month} ${year} | ${hours}:${minutes}`;
-    }
   }
 };
 
@@ -277,10 +172,6 @@ export default {
 
 <style scoped>
 /*style des détails*/
-.carousel,
-.carousel-item {
-  height: 400px !important;
-}
 
 .desc {
   margin: 1cm;
@@ -311,33 +202,6 @@ export default {
   /* Couleur du cercle */
 }
 
-.text-primary {
-  color: #7c5295e0;
-}
-
-.text-secondary {
-  color: white;
-}
-
-.banner-rating ul li.rating-star {
-  position: relative;
-  top: 19px;
-  padding-left: 25px;
-}
-
-.banner-rating ul {
-  list-style: none;
-}
-
-.banner-rating ul li {
-  display: inline-block;
-  width: 230px;
-  height: 50px;
-  font-size: 15px;
-  border-radius: 10%;
-}
-
-
 .apropos {
   font-size: larger;
   font-weight: bold;
@@ -352,6 +216,8 @@ export default {
 }
 
 .descrip {
+  width: 500px;
+  height: 700px;
   margin-left: 1cm;
 }
 
@@ -371,6 +237,12 @@ export default {
   width: 100%;
 }
 
+.banner img {
+  width: 100%;
+  height: 500px;
+  display: block;
+  object-fit: cover;
+}
 
 .comments-container {
   width: 100%;
@@ -385,7 +257,6 @@ export default {
   display: flex;
   margin-bottom: 10px;
 }
-
 
 .comment-content {
   flex: 1;
@@ -405,17 +276,5 @@ export default {
 .timestamp {
   font-size: 0.8em;
   color: #777;
-}
-
-.btn {
-  color: #ffffff;
-}
-
-.rectangle {
-  border-radius: 10px;
-  background-color: #52319e;
-  width: 100px;
-  height: 40px;
-  margin: auto;
 }
 </style>

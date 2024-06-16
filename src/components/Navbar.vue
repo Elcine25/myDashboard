@@ -6,16 +6,17 @@
         <a class="navbar-brand">
           <img src="@\assets\EventPluse.png" alt="Bootstrap" width="30" height="24">
         </a>
+        
         <div v-if="!isLoggedIn" class="text-end">
           <ul class="nav nav-underline">
           <li v-for="(item, index) in navbarItemsConnect" :key="index" :class="{ 'nav-item': true, 'active': menuActif === index }">
             <a class="nav-link" @click="setMenuActif(index)" :style="{ color: (menuActif === index) ? '#52319e' : '' }" :href="item.route">{{ item.label }}</a>
           </li>
           <div  class="m-6">
-          <a href="/connexion">
-            <UserButton />
-          </a>
+            <RouterLink :to="{ path: '/connexion'}" class="btn"><UserButton /></RouterLink>
+            
         </div>
+        
         </ul>
         
       </div>
