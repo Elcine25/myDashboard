@@ -58,7 +58,7 @@
       <!-- Carousel End -->
 
       <div class="">
-        <Catégories />
+        <Categories />
       </div>
       <div class="">
         <Event_cart />
@@ -73,16 +73,17 @@
 </template>
 
 <script>
+
 import axios from 'axios';
 import NaavBar from '@/components/NaavBar.vue';
 import Foooter from '../components/Foooter.vue';
-import Catégories from '../components/Catégories.vue';
+import Categories from '../components/Categories.vue';
 import Event_cart from '@/components/Event_cart.vue';
 
 export default {
   name: 'PageAccueil',
   components: {
-    Catégories,
+    Categories,
     NaavBar,
     Event_cart,
     Foooter
@@ -103,22 +104,24 @@ export default {
     }
   },
   mounted() {
-    this.getEvenements();
+    this.getEvenementsAvant();
     this.getCategories();
     this.getVilles();
   },
 
   methods: {
-    getEvenements() {
-      axios.get('http://localhost:8000/api/evenements')
+    getEvenementsAvant() {
+      axios.get('http://localhost:8000/api/events/miseenavant', {
+        })
         .then(response => {
           this.evenements = response.data.evenements;
-          console.log(this.evenements);
+          console.log('miseenavant', this.evenements);
         })
         .catch(error => {
-          console.error("Erreur d'affichage de l'événement", error);
-          //alert("Une erreur s'est produite lors de l'affichage de la l'événement.");
+          console.error("Erreur d'affichage des événements mis en avant", error);
+          // alert("Une erreur s'est produite lors de l'affichage de l'événement.");
         });
+
     },
 
     getCategories() {

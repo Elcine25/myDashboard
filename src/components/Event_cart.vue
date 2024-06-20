@@ -11,7 +11,7 @@
             <div class="blog-img">
               <img v-if="event.fichier" :src="getImageUrl(event.fichier)" :alt="event.name">
             </div>
-            <div class="blog-content">
+            <div class="text-center blog-content">
               <h2 class="blog-title">
                 <div>
                   {{ event.nom }}
@@ -53,7 +53,6 @@ export default {
       categories: [],
       villes: [],
       votes: [],
-      comment: {} // Champ de saisie de commentaire
     };
   },
   mounted() {

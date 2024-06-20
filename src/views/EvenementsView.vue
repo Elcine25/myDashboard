@@ -1,39 +1,68 @@
 <template>
   <nav>
-    <Navbar />
+    <NaavBar />
   </nav>
-  <div class="mt-3">
-    <Catégories />
+  <div class="mt-3 ml-5">
+    <Categories />
   </div>
   <div class="alignement text-center ml-5">
-    <div class=" justify-content-between ">
+    <div class="justify-content-between">
       <div class="input-group">
-        <input type="text" class="form-control bg-light border-1" v-model="searchQuery" @keyup.enter="performSearch"
-          placeholder="Rechercher...">
+        <input type="text" class="form-control bg-light border-1" v-model="searchQuery" placeholder="Rechercher...">
         <div class="input-group-append">
           <button class="btn btn-primary bg-light" type="button" @click="performSearch">
             <i class="fas fa-search fa-sm" height="20px"></i>
           </button>
         </div>
       </div>
-      <!--<select class="ml-5" v-model="selectedCity">
-        <option value="">Villes</option>
-        <option v-for="ville in villes" :key="ville.id" :value="ville.id">{{ ville.name }}</option>
-      </select>-->
-      <div class="d-flex align-items-center mt-5 mr-3 row ml-5 filter-options">
-        <span class="mr-2">Tous</span>
-        <span class="mr-2">Mes événements</span>
-        <span class="mr-2">Aujourd'hui</span>
-        <span class="mr-2">Ce mois</span>
+      <div class="d-flex align-items-center  mt-5 mr-3 row ml-5 filter-options">
+        <span type="button" class="px-3 mr-2" @click="filterAll">Tous</span>
+        <span type="button" class="px-3 mr-2" @click="filterToday">Aujourd'hui</span>
+        <span type="button" class="px-3 mr-2" @click="filterMonth">Ce mois</span>
+        <select class="m-2" v-model="selectedCity">
+          <option value="">Villes</option>
+          <option v-for="ville in villes" :key="ville.id" :value="ville.id">{{ ville.name }}</option>
+        </select>
       </div>
     </div>
-    <!--<div class="row ml-5">
-      <div class="ml-5">
-        <button class="ml-5" @click="filterEvents">Filtrer</button>
+    <div class="blog blog-page mt-100">
+      <div class="container">
+
+        <div class="section-header">
+          <h2>Événements à la une</h2>
+        </div>
+        <div v-if="this.evenements.length > 0" class="row">
+          <div v-for="(event, index) in this.evenements" :key="index" class="col-md-4">
+            <div class="blog-item">
+              <div class="blog-img">
+                <img v-if="event.fichier" :src="getImageUrl(event.fichier)" :alt="event.name">
+              </div>
+              <div class="blog-content">
+                <h2 class="blog-title">
+                  <div>
+                    {{ event.nom }}
+                  </div>
+                </h2>
+                <div class="blog-meta">
+                  <i class="fa fa-list-alt"></i>
+                  <div v-for="categorie in categories" :key="categorie.id">
+                    <a v-if="categorie.id === event.categories_id" href="">{{ categorie.name }}</a>
+                  </div>
+                  <i class="fa fa-calendar-alt"></i>
+                  <p>{{ formatDate(event.date) }}</p>
+                </div>
+                <div class="blog-text">
+                  <div v-for="ville in villes" :key="ville.id" class="content">
+                    <p v-if="ville.id === event.villes_id"> {{ ville.name }}, {{ event.lieu }}</p>
+                  </div>
+                  <RouterLink :to="{ path: '/evenements/' + event.id }" class="btn">En savoir plus</RouterLink>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div v-else> Chargement des données... </div>
       </div>
-    </div>-->
-    <div class="">
-      <Event_cart />
     </div>
   </div>
   <div class="mt-3">
@@ -43,69 +72,70 @@
 
 <script>
 import axios from 'axios';
-import Navbar from '@/components/Navbar.vue';
-import Event_cart from '@/components/Event_cart.vue';
+import NaavBar from '@/components/NaavBar.vue';
+//import Event_cart from '@/components/Event_cart.vue';
 import Foooter from '../components/Foooter.vue';
-import Catégories from '../components/Catégories.vue';
+import Categories from '../components/Categories.vue';
 
 export default {
-  name: 'evenementsPre',
+  name: 'EvenementsView',
   components: {
-    Navbar,
-    Event_cart,
-    Catégories,
+    NaavBar,
+   // Event_cart,
+    Categories,
     Foooter,
   },
-
   data() {
     return {
-      evenementID: '',
       evenements: [],
-      categories: [],
       villes: [],
-      comment: '',
       searchQuery: '',
-      selectedCategory: '',
-      selectedMonth: '',
       selectedCity: '',
-      ItemsMenu: [
-        { label: 'Tout', route: '/' },
-        { label: 'Aujourd\'hui', route: '/evenements' },
-        { label: 'Ce mois', route: '/inscription' }
-      ]
-    }
-  },
 
+      isLoggedIn: false,
+      evenementID: '',
+      categories: [],
+      votes: [],
+    };
+  },
   computed: {
-    imageUrl() {
-      return `/storage/${this.evenements.fichier}`;
+    filteredEvents() {
+      let filtered = this.evenements;
+
+      if (this.searchQuery) {
+        filtered = filtered.filter(event =>
+          event.nom.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+          event.description.toLowerCase().includes(this.searchQuery.toLowerCase())
+        );
+      }
+
+      if (this.selectedCity) {
+        filtered = filtered.filter(event => event.villes_id === this.selectedCity);
+      }
+
+      return filtered;
     }
   },
-
   mounted() {
-    this.getEvenements();
+    this.evenementID = this.evenements.id;
+    this.getEvenementsAvant();
     this.getCategories();
     this.getVilles();
   },
-
   methods: {
-    performSearch() {
-      // Insérez votre logique de recherche ici
-      console.log('Recherche effectuée:', this.searchQuery);
+    getImageUrl(imagePath) {
+      return `http://localhost:8000/storage/Fichiers/${imagePath}`;
     },
 
-    getEvenements() {
-      axios.get('http://localhost:8000/api/evenements')
+    getEvenementsAvant() {
+      axios.get('http://localhost:8000/api/events/miseenavant')
         .then(response => {
           this.evenements = response.data.evenements;
-          console.log(this.evenements);
         })
         .catch(error => {
-          console.error("Erreur d'affichage de l'événement", error);
-          //alert("Une erreur s'est produite lors de l'affichage de la l'événement.");
+          console.error("Erreur d'affichage des événements mis en avant", error);
         });
     },
-
     getCategories() {
       axios.get('http://localhost:8000/api/categories')
         .then(response => {
@@ -117,24 +147,17 @@ export default {
           //alert("Une erreur s'est produite lors de l'affichage de la catégorie.");
         });
     },
-
     getVilles() {
       axios.get('http://localhost:8000/api/villes')
         .then(response => {
           this.villes = response.data.villes;
-          console.log(this.villes);
         })
         .catch(error => {
-          console.error("Erreur d'affichage de catégorie", error);
-          //alert("Une erreur s'est produite lors de l'affichage de la catégorie.");
+          console.error("Erreur d'affichage des villes", error);
         });
     },
-
     formatDate(dateString) {
-      // Convertir la chaîne de date en objet Date
       const date = new Date(dateString);
-
-      // Récupérer le jour en format numérique
       const day = date.getDate();
       const monthIndex = date.getMonth();
       const months = [
@@ -142,32 +165,30 @@ export default {
         'JUIL', 'AOÛT', 'SEPT', 'OCT', 'NOV', 'DEC'
       ];
       const month = months[monthIndex];
-
-      // Concaténer le jour et le mois dans le format souhaité
       return `${day} ${month}`;
     },
 
-    filterEvents() {
-      const params = {
-        categorie_id: this.selectedCategory,
-        month: this.selectedMonth,
-        ville_id: this.selectedCity
-      };
-
-      axios.get('http://localhost:8000/api/evenements', { params })
-        .then(response => {
-          this.evenements = response.data.evenements;
-        })
-        .catch(error => {
-          console.error('Erreur de filtrage des événements', error);
-        });
+    filterAll() {
+      this.searchQuery = '';
+      this.selectedCity = '';
+    },
+    filterToday() {
+      const today = new Date().toISOString().split('T')[0];
+      this.evenements = this.evenements.filter(event => event.date === today);
+    },
+    filterMonth() {
+      const month = new Date().getMonth() + 1;
+      this.evenements = this.evenements.filter(event => new Date(event.date).getMonth() + 1 === month);
+    },
+    performSearch() {
+      // La recherche est effectuée automatiquement par la propriété calculée "filteredEvents"
     }
-
-
   }
 };
-
 </script>
+
+
+
 
 <style scoped>
 /*style du navbar*/

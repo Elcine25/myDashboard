@@ -666,7 +666,7 @@ a:focus {
 /********* Service CSS *********/
 /*******************************/
 .service {
-    position: relative;
+    /*position: relative;*/
     width: 100%;
     padding: 45px 0 15px 0;
 }
@@ -675,7 +675,7 @@ a:focus {
     position: relative;
     width: 100%;
     margin-bottom: 30px;
-    padding: 30px;
+    padding-block: 30px;
     text-align: center;
     border: 1px solid rgba(0, 0, 0, .1);
     transition: .3s;
@@ -1064,7 +1064,7 @@ a:focus {
     width: calc(100% - 60px);
     top: -60px;
     left: 30px;
-    padding: 25px 30px;
+    padding-block: 25px 30px;
     background: #ffffff;
     box-shadow: 0 0 30px rgba(0, 0, 0, .1);
     z-index: 2;

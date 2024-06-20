@@ -29,9 +29,30 @@
             <i class="fas fa-calendar fa-lg mg-2"></i>
             <p class="ml-1">Le {{ formatDate(evenements.date) }} à {{ evenements.heure }}.</p>
           </div>
+
           <div class="j-m-a">
             <i class=" bi-geo "></i>
             <p class="ml-1"> {{ evenements.lieu }}.</p>
+          </div>
+          <div class="contact">
+            <div class="container">
+              <div class="row align-items-center">
+                <div class="col">
+                  <div class="contact-info">
+                    <div class="contact-text">
+                      <h3>Ajouter cette date à mon calendrier</h3>
+                      <div class="row">
+                        <a :href="googleCalendarUrl" target="_blank" class="button rectangle btn mt-2">Google
+                          Calendar</a>
+                        <a :href="outlookCalendarUrl" target="_blank" class="button rectangle btn mt-2">Outlook
+                          Calendar</a>
+                        <a :href="iCalUrl" download="event.ics" class="button rectangle btn  mt-2">Apple Calendar</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="circle "></div>
           <div class="apropos ml-5">À propos de cet événement</div>
@@ -47,9 +68,10 @@
                   </div>
                   <div class="contact-text">
                     <h3>Voulez-vous être informé par courrier des événements similaires à celui-ci ?</h3>
-                    <div class="row"><button type="submit" class=" rectangle btn mt-2">NON </button>
-          <button type="submit" class=" rectangle btn mt-2">OUI </button>
-        </div>
+                    <div class="row">
+                      <button @click="handleSubscription(false)" class="rectangle btn mt-2">NON</button>
+                      <button @click="handleSubscription(true)" class="rectangle btn mt-2">OUI</button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -68,7 +90,7 @@
                 <i class="ml-3 m fas btn fa-star fa-lg"
                   :class="{ 'text-primary': hasvoted, 'text-secondary': !hasvoted }" @click="addVote(evenements.id)">
                 </i>
-              </li>g
+              </li>
             </ul>
           </div>
         </div>
@@ -120,6 +142,7 @@ export default {
       evenements: [],
       evenementId: '',
       categories: [],
+      categorieID: null,
       users: [],
       hasvoted: false,
       nombreVotes: 0,
@@ -137,6 +160,44 @@ export default {
     this.fetchComments();
     this.fetchVotes();
   },
+  computed: {
+    googleCalendarUrl() {
+      const baseUrl = 'https://www.google.com/calendar/render?action=TEMPLATE';
+      const text = `&text=${encodeURIComponent(this.evenements.nom)}`;
+      const dates = `&dates=${this.formatDateTime(this.evenements.date, this.evenements.heure)}/${this.formatDateTime(this.evenements.date, this.evenements.heure)}`;
+      const details = `&details=${encodeURIComponent(this.evenements.description)}`;
+      const location = `&location=${encodeURIComponent(this.evenements.lieu)}`;
+      return `${baseUrl}${text}${dates}${details}${location}&sf=true&output=xml`;
+    },
+    outlookCalendarUrl() {
+      const baseUrl = 'https://outlook.live.com/owa/?path=/calendar/action/compose';
+      const subject = `&subject=${encodeURIComponent(this.evenements.nom)}`;
+      const startdt = `&startdt=${this.formatDateTimeOutlook(this.evenements.date, this.evenements.heure)}`;
+      const enddt = `&enddt=${this.formatDateTimeOutlook(this.evenements.date, this.evenements.heure)}`;
+      const body = `&body=${encodeURIComponent(this.evenements.description)}`;
+      const location = `&location=${encodeURIComponent(this.evenements.lieu)}`;
+      return `${baseUrl}${subject}${startdt}${enddt}${body}${location}`;
+    },
+    iCalUrl() {
+      const icsContent = `
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//hacksw/handcal//NONSGML v1.0//EN
+CALSCALE:GREGORIAN
+BEGIN:VEVENT
+DTSTART:${this.formatDate(this.evenements.date, this.evenements.heure)}
+DTEND:${this.formatDate(this.evenements.date, this.evenements.heure)}
+SUMMARY:${this.evenements.nom}
+DESCRIPTION:${this.evenements.description}
+LOCATION:${this.evenements.lieu}
+END:VEVENT
+END:VCALENDAR
+            `;
+      const blob = new Blob([icsContent.trim()], { type: 'text/calendar' });
+      return URL.createObjectURL(blob);
+    },
+  },
+
   methods: {
     addVote(evenementId) {
       const toast = useToast();
@@ -191,13 +252,35 @@ export default {
       }
     },
 
+    handleSubscription(subscribe) {
+      if (localStorage.getItem('authToken')) {
+        axios.post(`http://localhost:8000/api/subscribe`, {
+          subscribe: subscribe,
+          evenement_id: this.evenementID,
+          categories_id: this.categorieID
+        }, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          },
+        })
+          .then(response => {
+            useToast().success(response.data.message);
+          })
+          .catch(error => {
+            useToast().error('Erreur lors de l\'inscription à la notification.');
+            console.error(error);
+          });
+      } else {
+        useToast().error('Veuillez vous connecter.');
+      }
+    },
+
     getEvenements() {
       axios.get('http://localhost:8000/api/evenements/' + this.evenementID)
         .then(response => {
           this.evenements = response.data.evenements;
           this.nombreVotes = response.data.nombre_votes;
           console.log(this.evenements);
-          console.log(this.nombre_votes);
         })
         .catch(error => {
           console.error("Erreur d'affichage de l'événement", error);
@@ -243,6 +326,32 @@ export default {
           console.error("Erreur lors de la récupération des commentaires", error);
         });
 
+    },
+    formatDateTime(dateString, timestamp) {
+      // Combinaison de la date et de l'heure en une seule chaîne
+      const dateTimeString = `${dateString}T${timestamp}:00`;
+
+      // Création d'un nouvel objet Date
+      const d = new Date(dateTimeString);
+
+      // Vérification si la date est valide
+      if (isNaN(d.getTime())) {
+        console.error('Date ou heure invalide:', dateTimeString);
+        return '';
+      }
+
+      // Conversion au format ISO et suppression des séparateurs
+      return d.toISOString().replace(/-|:|\.\d\d\d/g, '');
+    },
+    formatDateTimeOutlook(dateString, timestamp) {
+      const dateTimeString = `${dateString} T${timestamp}`;
+      const d = new Date(dateTimeString);
+      // Vérification si la date est valide
+      if (isNaN(d.getTime())) {
+        console.error('Date ou heure invalide:', dateTimeString);
+        return '';
+      }
+      return d.toISOString().replace(/-|:|\.\d\d\d/g, '').replace(/-|:|\.\d\d\d/g, '');
     },
     formatDate(dateString) {
       const date = new Date(dateString);
@@ -415,7 +524,6 @@ export default {
   border-radius: 10px;
   background-color: #52319e;
   width: 100px;
-  height: 40px;
   margin: auto;
 }
 </style>
