@@ -19,7 +19,7 @@
 
   <body>
     <div class="row">
-      <div class="col-6">
+      <div class="col-md-6">
         <div class="desc">
           <div class="circle "></div>
           <div class="ml-5 nom">
@@ -31,7 +31,7 @@
           </div>
 
           <div class="j-m-a">
-            <i class=" bi-geo "></i>
+            <font-awesome-icon :icon="['fas','location']"/>
             <p class="ml-1"> {{ evenements.lieu }}.</p>
           </div>
           <div class="contact">
@@ -79,15 +79,15 @@
           </div>
         </div>
       </div>
-      <div class="col-6">
+      <div class="col-md-6">
         <div class="mt-2">
           <div class="banner-rating">
-            <ul>
-              <li class="rating-star">
+            <ul class="row">
+              <li class=" col rating-star">
                 <span class="nom">{{ nombreVotes }} Personne(s) aime(ent) l'idée de cet événement !</span>
               </li>
-              <li>
-                <i class="ml-3 m fas btn fa-star fa-lg"
+              <li class="col">
+                <i class="fas btn fa-star fa-lg"
                   :class="{ 'text-primary': hasvoted, 'text-secondary': !hasvoted }" @click="addVote(evenements.id)">
                 </i>
               </li>
@@ -256,7 +256,7 @@ END:VCALENDAR
       if (localStorage.getItem('authToken')) {
         axios.post(`http://localhost:8000/api/subscribe`, {
           subscribe: subscribe,
-          evenement_id: this.evenementID,
+          evenements_id: this.evenementID,
           categories_id: this.categorieID
         }, {
           headers: {
@@ -428,20 +428,8 @@ END:VCALENDAR
   color: white;
 }
 
-.banner-rating ul li.rating-star {
-  position: relative;
-  top: 19px;
-  padding-left: 25px;
-}
-
 .banner-rating ul {
   list-style: none;
-}
-
-.banner-rating ul li {
-  display: inline-block;
-  width: 230px;
-  height: 50px;
   font-size: 15px;
   border-radius: 10%;
 }

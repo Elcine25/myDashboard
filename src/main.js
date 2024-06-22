@@ -5,6 +5,7 @@ import App from './App.vue'
 import router from './router'
 import Toast, { POSITION } from "vue-toastification"
 import "vue-toastification/dist/index.css"
+import './registerServiceWorker'
 
 const options = {
   // Vous pouvez ajouter des options globales ici
